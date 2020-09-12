@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container">
+  <h1>Integrating PlotLy into DJango</h1>
+  <p class="lead">Click on the buttons below to see the examples.</p>
+</div>
+
+<div class="container">
+  <table class="table table-striped table-hover">
+    <tr>
+      <td>1D</td>
+      <td><a class="btn btn-default" href="{% url 'app1:plot1d' %}" role="button">View</a></td>
+    </tr>
+    <tr>
+      <td>2D</td>
+      <td><a class="btn btn-default" href="{% url 'app1:plot2d' %}" role="button">View</a></td>
+    </tr>
+    <tr>
+      <td>3D</td>
+      <td><a class="btn btn-default" href="{% url 'app1:plot3d' %}" role="button">View</a></td>
+    </tr>
+    <tr>
+      <td>Random 1D (Ajax)</td>
+      <td><a class="btn btn-default" href="{% url 'app1:plot1d_multiple' 1 %}" role="button">View</a></td>
+    </tr>
+    <tr>
+      <td>SANS Iq</td>
+      <td><a class="btn btn-default" href="{% url 'app1:plotIq' %}" role="button">View</a></td>
+    </tr>
+    <tr>
+      <td>Live Plot 2D</td>
+      <td><a class="btn btn-default" href="{% url 'app1:plot_live' %}" role="button">View</a></td>
+    </tr>
+    <tr>
+      <td>3D Scatter</td>
+      <td><a class="btn btn-default" href="{% url 'app1:plot3d_scatter' %}" role="button">View</a></td>
+    </tr>
+  </table>
+</div>
+<!-- /.container -->
+
+{% endblock %}
