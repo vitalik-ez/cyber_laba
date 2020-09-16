@@ -15,6 +15,10 @@ from .import plots
 import plotly.graph_objs as go
 from plotly.offline import plot
 
+
+import sqlite3
+from collections import Counter
+
 logger = logging.getLogger(__name__)
 
 
@@ -65,11 +69,83 @@ class Graph(View):
 
 
 
+def check_bd(request):
+	conn = sqlite3.connect("test_check.db")
+	cursor = conn.cursor()
+	month_table = ['January', 'February', 'March']
+	error = 0
+	error_day = 0
+	check_month = []
+	for i in month_table:
+	    sql = f"SELECT * from {i} WHERE number_month IS NULL OR T IS NULL or dd IS NULL"
+	    cursor.execute(sql)
+	    data = cursor.fetchall()
+	    error += len(data)
+	    j = 0
+	    while j < len(data):
+	        sql = f"SELECT * from {i} WHERE id > {data[j][0]} AND dd NOT NULL LIMIT 1"
+	        cursor.execute(sql)
+	        row = cursor.fetchall()
+	        if row[0][0]-data[j][0] == 1:
+	            print(" Брати попереднє значення")
+	            sql = f"SELECT dd from {i} WHERE id = {data[j][0] - 1} AND dd NOT NULL"
+	            cursor.execute(sql)
+	            value_true = cursor.fetchall()
+	            sql = f"UPDATE {i} SET dd = '{value_true[0][0]}' WHERE id = {data[j][0]}"
+	            cursor.execute(sql)
+	            conn.commit()
+	        else:
+	            sql = f"SELECT dd from {i} WHERE id = {data[j][0] - 1} AND dd NOT NULL"
+	            cursor.execute(sql)
+	            value_1 = cursor.fetchall()
+	            sql = f"SELECT dd from {i} WHERE id = {row[0][0]} AND dd NOT NULL"
+	            cursor.execute(sql)
+	            value_2 = cursor.fetchall()
+	            d = (row[0][0] - data[j][0])
+	            print("d =", d)
+	            if d % 2 == 0:
+	                d = d / 2
+	            else:
+	                d = d / 2 + 0.5
+	            sql = f"UPDATE {i} SET dd = '{value_1[0][0]}' WHERE id >= {data[j][0]} AND id < {data[j][0] + d}"
+	            cursor.execute(sql)
+	            conn.commit()
+	            sql = f"UPDATE {i} SET dd = '{value_2[0][0]}' WHERE id >= {data[j][0] + d} AND id <= {row[0][0] - 1}"
+	            cursor.execute(sql)
+	            conn.commit()
+	            j += row[0][0] - data[j][0] - 1
+	        j += 1
+
+	    sql = f"SELECT number_month from {i}"
+	    cursor.execute(sql)
+	    data = cursor.fetchall()
+	    list_day = []
+	    for i in data:
+	        list_day.append(i[0])
+	    c = Counter(list_day)
+	    check = [ True  for i in range(data[0][0],data[-1][0] + 1) if c[i] == 48]
+	    check = True if len(check) == data[-1][0] else False
+	    check_month.append(check)
+	if all(check_month):
+	    error_day = "Всі дні та всі часи"
+	else:
+	    error_day = "Помилка: перевірте всі дні та години в БД."
+
+	conn.close()
+	return HttpResponse("Помилок, {}. {}".format(error, error_day))
 
 
 
-def check_bd():
-	pass
+
+
+
+
+
+
+
+
+
+
 
 
 def index(request):

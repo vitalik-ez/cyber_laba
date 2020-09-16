@@ -13,7 +13,7 @@
 </div>
 <!-- /.container -->
 <div class="container">
-    <form action="{% url 'graph' %}" method="post">
+    <form action="{% url 'form' %}" method="post">
 	    {% csrf_token %}
 	    <label>Введіть початкову дату:</label>
 	    <input name="data1" type="text" required placeholder="2012-01-15">
