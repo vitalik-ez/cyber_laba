@@ -8,7 +8,7 @@
 {% block content %}
 
 <div class="container">
-  <h1>Температурні умови</h1>
+  <h1>Температурні режими</h1>
   <p class="lead">Here we go...</p>
 </div>
 <!-- /.container -->
@@ -34,6 +34,17 @@
   <div class="row" style="border: 1px solid black">
     <div class="col-md-12">{{plot|safe}}</div>
   </div>
+  <table>
+    {% for i in x_y %}
+        <tr>
+        	{% for j in i %}
+                <td>
+                    {{ j }} |
+                </td>
+            {% endfor %}
+        </tr>
+    {% endfor %}
+</table>
 </div>
 {% endif %}
 <!-- /.container -->

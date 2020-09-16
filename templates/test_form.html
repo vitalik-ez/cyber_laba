@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+
+
+{% block content %}
+	<form action="{% url 'form' %}" method="post">
+	    {% csrf_token %}
+	    <label>Введіть початкову дату:</label>
+	    <input name="data1" type="text" required placeholder="2012-01-01">
+	    <label>Введіть кінцеву дату:</label>
+	    <input name="data2" type="text" required placeholder="2012-03-23">
+	    <label>Введіть час:</label>
+	    <input name="time" type="text" required placeholder="00:00:00">
+	    <input type="submit" value="Submit">
+	</form>
+	{{ data1 }}
+	{{ data2 }}
+{% endblock %}
+
+<!-- {% url 'new' %}

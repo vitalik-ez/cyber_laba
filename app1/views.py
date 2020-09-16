@@ -8,7 +8,7 @@ from . import plots
 
 logger = logging.getLogger(__name__)
 
-
+    
 class IndexView(TemplateView):
     template_name = "index.html"
 
