@@ -8,19 +8,19 @@
 {% block content %}
 
 <div class="container">
-  <h1>Температурні умови</h1>
+  <h1>Тривалість режимів вітрової активності</h1>
+  <p class="lead">Here we go...</p>
 </div>
 <!-- /.container -->
 <div class="container">
-	<p>Введіть період часу:</p>
-    <form action="{% url 'form' %}" method="post">
+    <form action="{% url 'WindActivity' %}" method="post">
 	    {% csrf_token %}
 	    <label>Введіть початкову дату:</label>
 	    <input name="data1" type="text" required placeholder="2012-01-15">
 	    <label>Введіть кінцеву дату:</label>
-	    <input name="data2" type="text" required placeholder="2012-03-23"><br>
+	    <input name="data2" type="text" required placeholder="2012-03-23">
 	    <label>Введіть час:</label>
-	    <input name="time" type="text" required placeholder="00:30:00"><br>
+	    <input name="time" type="text" required placeholder="00:30:00">
 	    <input type="submit" value="Submit">
 	   
 	</form>

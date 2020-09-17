@@ -66,8 +66,36 @@ class Graph(View):
 		context = {'data1': data1, 'data2': data2, 'time': time, 'plot': graphic[0], 'x_y': graphic[1]}
 		return render(request, 'plot_graph.html', context)
 
+class RosaWindy(View):
+
+	def get(self, request):
+		return render(request, 'plot_rosa_windy.html', {})
+
+	def post(self, request):
+
+		data1 = request.POST.get('data1')
+		data2 = request.POST.get('data2')
+		time = request.POST.get('time')
+		graphic = plots.RosaWindy(data1, data2, time)
+
+		context = {'data1': data1, 'data2': data2, 'time': time, 'plot': graphic}
+		return render(request, 'plot_rosa_windy.html', context)
 
 
+class WindActivity(View):
+
+	def get(self, request):
+		return render(request, 'plot_wind_activity.html', {})
+
+	def post(self, request):
+
+		data1 = request.POST.get('data1')
+		data2 = request.POST.get('data2')
+		time = request.POST.get('time')
+		graphic = plots.PlotWindActivity(data1, data2, time)
+
+		context = {'data1': data1, 'data2': data2, 'time': time, 'plot': graphic}
+		return render(request, 'plot_wind_activity.html', context)
 
 def check_bd(request):
 	conn = sqlite3.connect("test_check.db")
@@ -77,28 +105,28 @@ def check_bd(request):
 	error_day = 0
 	check_month = []
 	for i in month_table:
-	    sql = f"SELECT * from {i} WHERE number_month IS NULL OR T IS NULL or dd IS NULL"
+	    sql = f"SELECT * from {i} WHERE number_month IS NULL OR T IS NULL"
 	    cursor.execute(sql)
 	    data = cursor.fetchall()
 	    error += len(data)
 	    j = 0
 	    while j < len(data):
-	        sql = f"SELECT * from {i} WHERE id > {data[j][0]} AND dd NOT NULL LIMIT 1"
+	        sql = f"SELECT * from {i} WHERE id > {data[j][0]} AND T NOT NULL LIMIT 1"
 	        cursor.execute(sql)
 	        row = cursor.fetchall()
 	        if row[0][0]-data[j][0] == 1:
 	            print(" Брати попереднє значення")
-	            sql = f"SELECT dd from {i} WHERE id = {data[j][0] - 1} AND dd NOT NULL"
+	            sql = f"SELECT T from {i} WHERE id = {data[j][0] - 1} AND T NOT NULL"
 	            cursor.execute(sql)
 	            value_true = cursor.fetchall()
-	            sql = f"UPDATE {i} SET dd = '{value_true[0][0]}' WHERE id = {data[j][0]}"
+	            sql = f"UPDATE {i} SET T = '{value_true[0][0]}' WHERE id = {data[j][0]}"
 	            cursor.execute(sql)
 	            conn.commit()
 	        else:
-	            sql = f"SELECT dd from {i} WHERE id = {data[j][0] - 1} AND dd NOT NULL"
+	            sql = f"SELECT T from {i} WHERE id = {data[j][0] - 1} AND T NOT NULL"
 	            cursor.execute(sql)
 	            value_1 = cursor.fetchall()
-	            sql = f"SELECT dd from {i} WHERE id = {row[0][0]} AND dd NOT NULL"
+	            sql = f"SELECT T from {i} WHERE id = {row[0][0]} AND T NOT NULL"
 	            cursor.execute(sql)
 	            value_2 = cursor.fetchall()
 	            d = (row[0][0] - data[j][0])
@@ -107,10 +135,10 @@ def check_bd(request):
 	                d = d / 2
 	            else:
 	                d = d / 2 + 0.5
-	            sql = f"UPDATE {i} SET dd = '{value_1[0][0]}' WHERE id >= {data[j][0]} AND id < {data[j][0] + d}"
+	            sql = f"UPDATE {i} SET T = '{value_1[0][0]}' WHERE id >= {data[j][0]} AND id < {data[j][0] + d}"
 	            cursor.execute(sql)
 	            conn.commit()
-	            sql = f"UPDATE {i} SET dd = '{value_2[0][0]}' WHERE id >= {data[j][0] + d} AND id <= {row[0][0] - 1}"
+	            sql = f"UPDATE {i} SET T = '{value_2[0][0]}' WHERE id >= {data[j][0] + d} AND id <= {row[0][0] - 1}"
 	            cursor.execute(sql)
 	            conn.commit()
 	            j += row[0][0] - data[j][0] - 1
@@ -129,8 +157,7 @@ def check_bd(request):
 	if all(check_month):
 	    error_day = "Всі дні та всі часи"
 	else:
-	    error_day = "Помилка: перевірте всі дні та години в БД."
-
+	    error_day = "Перевірте всі дні та години в БД"
 	conn.close()
 	return HttpResponse("Помилок, {}. {}".format(error, error_day))
 

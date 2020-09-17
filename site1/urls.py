@@ -17,10 +17,12 @@ from django.conf.urls import url, include
 from django.contrib import admin
 from django.views.generic.base import RedirectView
 from django.urls import include, path
+from . import views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^$', RedirectView.as_view(url='/app1/'), name='index'),
-    url(r'^app1/',  include(('app1.urls', 'app1'), namespace='app1', )),
+    path('',views.IndexView.as_view(), name='index_main'),
+    #url(r'^$', RedirectView.as_view(url='/laba/'), name='index'),
+    #url(r'^app1/',  include(('app1.urls', 'app1'), namespace='app1', )),
     path('laba/', include('laba.urls')),
 ]
