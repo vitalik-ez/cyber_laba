@@ -74,7 +74,7 @@ def plot1d(begin = '2012-01-15', end = '2012-03-23', time='00:30:00'):
         # height=500,
         title="Температурні умови",
         xaxis=dict(
-            title="Data"
+            title="Date"
 
         ),
         yaxis=dict(
@@ -219,6 +219,8 @@ def RosaWindy(begin, end, time):
         polar_angularaxis_rotation=90,
 
     )
+    
+
     plot_div = plot(fig, auto_open=False, output_type='div')
     return plot_div
 

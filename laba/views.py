@@ -167,7 +167,15 @@ def check_bd(request):
 
 
 
+def test_form(request):
+	return render(request, 'date.html')
 
+
+from datetime import datetime 
+def date(request):
+	datetimeObj_1 = datetime.strptime(request.POST.get('date_1'), '%d/%m/%Y %H:%M')
+	datetimeObj_2 = datetime.strptime(request.POST.get('date_2'), '%d/%m/%Y %H:%M')
+	return HttpResponse("Початок: {}. Кінець: {}".format(datetimeObj_1.minute, datetimeObj_2.minute))
 
 
 

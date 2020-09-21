@@ -3,7 +3,21 @@
 
 
 {% block content %}
-	<form action="{% url 'form' %}" method="post">
+<div class="container">
+	<form action="date" method="post">
+		{% csrf_token %}
+		<input type="date" name="">
+		{{ DateForm.date_1 }}
+		<input type="date" name="">
+		{{ DateForm.date_2 }}
+		<input type="submit" value="Submit">
+	</form>
+</div>
+	
+
+
+
+	<!--<form action="{% url 'form' %}" method="post">
 	    {% csrf_token %}
 	    <label>Введіть початкову дату:</label>
 	    <input name="data1" type="text" required placeholder="2012-01-01">
@@ -14,7 +28,7 @@
 	    <input type="submit" value="Submit">
 	</form>
 	{{ data1 }}
-	{{ data2 }}
+	{{ data2 }}-->
 {% endblock %}
 
 <!-- {% url 'new' %}

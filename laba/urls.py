@@ -13,8 +13,8 @@ urlpatterns = [
     path('graph/',views.Graph.as_view(), name='graph'),
     path('rosa_windy/',views.RosaWindy.as_view(), name='RosaWindy'),
     path('wind_activity/',views.WindActivity.as_view(), name='WindActivity'),
-
-
+    path('test_form/', views.test_form, name='test_form'),
+    path('test_form/date', views.date, name='date'),
 
 
 
