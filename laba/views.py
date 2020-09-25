@@ -19,37 +19,37 @@ from plotly.offline import plot
 import sqlite3
 from collections import Counter
 
+from datetime import datetime 
+
 logger = logging.getLogger(__name__)
 
 
-
-class IndexView(TemplateView):
-    template_name = "index.html"
-
-class Plot1DView(TemplateView):
-    template_name = "plot.html"
-
-    def get_context_data(self, **kwargs):
-        # Call the base implementation first to get a context
-        context = super(Plot1DView, self).get_context_data(**kwargs)
-        context['plot'] = plots.plot1d()
-        return context
+def test_form(request):
+	return render(request, 'date.html')
 
 class FormView(View):
 
 	def get(self, request):
-		return render(request, 'plot.html', {})
+		return render(request, 'graphics.html', {})
 
 	def post(self, request):
 		 
-		data1 = request.POST.get('data1')
-		data2 = request.POST.get('data2')
-		time = request.POST.get('time')
+		datetimeObj_1 = datetime.strptime(request.POST.get('date_1'), '%d/%m/%Y %H:%M')
+		datetimeObj_2 = datetime.strptime(request.POST.get('date_2'), '%d/%m/%Y %H:%M')
 
-		graphic = plots.plot1d(data1, data2, time)
+		list_dict = plots.dataSampling(datetimeObj_1, datetimeObj_2)
+		graphic_1 = plots.graphic_1(list_dict, request.POST.get('date_1'), request.POST.get('date_2'))
+		graphic_2 = plots.graphic_2(list_dict)
+		graphic_3 = plots.graphic_3(list_dict)
+		graphic_4 = plots.graphic_4(list_dict)
 
-		context = {'data1': data1, 'data2': data2, 'time': time, 'plot': graphic}
-		return render(request, 'plot.html', context)
+		graphic_5 = plots.graphic_5(datetimeObj_1, datetimeObj_2)
+		graphic_6 = plots.graphic_6(datetimeObj_1, datetimeObj_2)
+
+		context = {'data1': datetimeObj_1, 'data2': datetimeObj_2, 'graphic_1': graphic_1,
+		'graphic_2': graphic_2,'graphic_3': graphic_3,'graphic_4': graphic_4, 'graphic_5': graphic_5,
+		 'graphic_6': graphic_6}
+		return render(request, 'graphics.html', context)
 
 class Graph(View):
 
@@ -100,7 +100,7 @@ class WindActivity(View):
 def check_bd(request):
 	conn = sqlite3.connect("test_check.db")
 	cursor = conn.cursor()
-	month_table = ['January', 'February', 'March']
+	month_table = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
 	error = 0
 	error_day = 0
 	check_month = []
@@ -167,11 +167,10 @@ def check_bd(request):
 
 
 
-def test_form(request):
-	return render(request, 'date.html')
 
 
-from datetime import datetime 
+
+
 def date(request):
 	datetimeObj_1 = datetime.strptime(request.POST.get('date_1'), '%d/%m/%Y %H:%M')
 	datetimeObj_2 = datetime.strptime(request.POST.get('date_2'), '%d/%m/%Y %H:%M')
@@ -182,46 +181,3 @@ def date(request):
 
 
 
-
-def index(request):
-    return HttpResponse("Hello, world. You're at the polls index.")
-
-def show_name(request, username):
-	return HttpResponse("Hello, {}".format(username))
-
-def new(request):
-	# if this is a POST request we need to process the form data
-    if request.method == 'POST':
-        # create a form instance and populate it with data from the request:
-        form = NameForm(request.POST)
-        # check whether it's valid:
-        if form.is_valid():
-            # process the data in form.cleaned_data as required
-            # ...
-            # redirect to a new URL:
-            return HttpResponseRedirect('/laba/temperature')
-
-    # if a GET (or any other method) we'll create a blank form
-    else:
-        form = NameForm()
-
-    return render(request, 'test_form.html', {'form': form})
-    
-
-def get_name(request):
-    # if this is a POST request we need to process the form data
-    if request.method == 'POST':
-        # create a form instance and populate it with data from the request:
-        form = NameForm(request.POST)
-        # check whether it's valid:
-        if form.is_valid():
-            # process the data in form.cleaned_data as required
-            # ...
-            # redirect to a new URL:
-            return HttpResponseRedirect('/thanks/')
-
-    # if a GET (or any other method) we'll create a blank form
-    else:
-        form = NameForm()
-
-    return render(request, 'test_form.html', {'form': form})

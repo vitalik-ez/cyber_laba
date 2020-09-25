@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block head %}
+{{block.super}}
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+  <h1>Температурні умови</h1>
+</div>
+<!-- /.container -->
+<div class="container">
+	<p>Введіть період часу:</p>
+    <form action="{% url 'form' %}" method="post">
+	    {% csrf_token %}
+	    <label>Введіть початкову дату:</label>
+	    <input name="data1" type="text" required placeholder="2012-01-15">
+	    <label>Введіть кінцеву дату:</label>
+	    <input name="data2" type="text" required placeholder="2012-03-23"><br>
+	    <label>Введіть час:</label>
+	    <input name="time" type="text" required placeholder="00:30:00"><br>
+	    <input type="submit" value="Submit">
+	   
+	</form>
+	
+	
+</div>
+{% if plot %}
+<div class="container">
+	<p>На графіку відображено період: {{ data1 }} {{ data2 }}</p> 
+	<p>Час: {{ time }}</p>
+  <div class="row" style="border: 1px solid black">
+    <div class="col-md-12">{{plot|safe}}</div>
+  </div>
+</div>
+{% endif %}
+<!-- /.container -->
+
+
+<div class="container">
+	<p>&ensp;</p>
+  <a class="btn btn-primary pull-right" href="{% url 'index' %}">Назад</a>
+</div>
+
+{% endblock %}

@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block head %}
+{{ block.super }}
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+  <h1>Графіки</h1>
+  <p class="lead">Here we go...</p>
+</div>
+<!-- /.container -->
+{{ data1 }} {{ data2 }}
+{% if graphic_1 %}
+<div class="container">
+  <div class="row" style="border: 1px solid black">
+    <div class="col-md-12">{{ graphic_1|safe }}</div>
+  </div>
+</div>
+{% endif %}
+{% if graphic_2 %}
+<div class="container">
+  <div class="row" style="border: 1px solid black">
+    <div class="col-md-12">{{ graphic_2|safe }}</div>
+  </div>
+</div>
+{% endif %}
+{% if graphic_3 %}
+<div class="container">
+  <div class="row" style="border: 1px solid black;">
+    <div class="col-md-12" style="display: flex;align-items: center; justify-content: center;">{{ graphic_3|safe }}</div>
+  </div>
+</div>
+{% endif %}
+{% if graphic_4 %}
+<div class="container">
+  <div class="row" style="border: 1px solid black">
+    <div class="col-md-12">{{ graphic_4|safe }}</div>
+  </div>
+</div>
+{% endif %}
+{% if graphic_5 %}
+<div class="container">
+  <div class="row" style="border: 1px solid black">
+    <div class="col-md-12">{{ graphic_5|safe }}</div>
+  </div>
+</div>
+{% endif %}
+{% if graphic_6 %}
+<div class="container">
+  <div class="row" style="border: 1px solid black">
+    <div class="col-md-12">{{ graphic_6|safe }}</div>
+  </div>
+</div>
+{% endif %}
+<!-- /.container -->
+
+
+<div class="container">
+  <p>&ensp;</p>
+  <a class="btn btn-primary pull-right" href="{% url 'laba' %}">Назад</a>
+</div>
+
+{% endblock %}
