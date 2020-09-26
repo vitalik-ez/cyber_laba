@@ -117,9 +117,10 @@ def graphic_2(list_dict):
     figure=go.Figure(data=data,layout=layout)
     plot_div = plot(figure, auto_open=False, output_type='div')
 
-    #x_y = [ (i,j) for i, j in zip(x,y)]
+    print(x)
+    print(y)
 
-    return plot_div
+    return (plot_div, x, y)
 
 
 def graphic_3(list_dict):
@@ -133,7 +134,7 @@ def graphic_3(list_dict):
 
     d = {}
     for i in data:
-        print(i[0], i[1])
+        #print(i[0], i[1])
         if i[0] in d:
             if 0 < i[1] <= range[1]:
                 d[i[0]][0] += 1
@@ -294,14 +295,14 @@ def graphic_6(datetimeObj_1, datetimeObj_2):
             d[i] = d[i] + tm3
         else:
             d[i] = timedelta(hours=1, minutes=0, seconds=0)
-    print(d)
+    #print(d)
 
     x = [ i for i in d.keys() ]
     y = [ i.days * 24 + i.seconds/3600 if i.days != 0 else i.seconds / 3600 for i in d.values() ]
 
     trace1 = go.Bar(x=x, y=y)
-    print(x)
-    print(y)
+    #print(x)
+    #print(y)
 
     data=go.Data([trace1])
     layout=go.Layout(title="Тривалість режимів сонячної активності", xaxis={'title':'Вт/м2'}, yaxis={'title':'t,ГОД'})

@@ -41,16 +41,19 @@ class FormView(View):
 
 		list_dict = plots.dataSampling(datetimeObj_1, datetimeObj_2)
 		graphic_1 = plots.graphic_1(list_dict, request.POST.get('date_1'), request.POST.get('date_2'))
-		graphic_2 = plots.graphic_2(list_dict)
+		graphic_2, x, y = plots.graphic_2(list_dict)
 		graphic_3 = plots.graphic_3(list_dict)
 		graphic_4 = plots.graphic_4(list_dict)
 
 		graphic_5 = plots.graphic_5(datetimeObj_1, datetimeObj_2)
 		graphic_6 = plots.graphic_6(datetimeObj_1, datetimeObj_2)
 
+		z = [ (i,j) for i,j in zip(x,y)]
+		print(z)
+
 		context = {'data1': datetimeObj_1, 'data2': datetimeObj_2, 'graphic_1': graphic_1,
 		'graphic_2': graphic_2,'graphic_3': graphic_3,'graphic_4': graphic_4, 'graphic_5': graphic_5,
-		 'graphic_6': graphic_6}
+		 'graphic_6': graphic_6, 'z':z}
 		return render(request, 'graphics.html', context)
 
 
@@ -76,8 +79,12 @@ def check_bd(request):
 	            print(" Брати попереднє значення")
 	            sql = f"SELECT T from {i} WHERE id = {data[j][0] - 1} AND T NOT NULL"
 	            cursor.execute(sql)
-	            value_true = cursor.fetchall()
-	            sql = f"UPDATE {i} SET T = '{value_true[0][0]}' WHERE id = {data[j][0]}"
+	            value_1 = cursor.fetchall()
+	            sql = f"SELECT T from {i} WHERE id = {data[j][0] + 1} AND T NOT NULL"
+	            cursor.execute(sql)
+	            value_2 = cursor.fetchall()
+	            value_average = (value_1[0][0] + value_2[0][0])/2
+	            sql = f"UPDATE {i} SET T = '{value_average}' WHERE id = {data[j][0]}"
 	            cursor.execute(sql)
 	            conn.commit()
 	        else:

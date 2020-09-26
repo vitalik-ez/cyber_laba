@@ -11,10 +11,11 @@
 
   <div class="container">
     <h1>Графіки</h1>
-    <p class="lead">Here we go...</p>
+    <p class="lead">Діапазон введенних дат: {{ data1 }} - {{ data2 }} </p>
+    <p></p>
   </div>
   <!-- /.container -->
-  {{ data1 }} {{ data2 }}
+  
   {% if graphic_1 %}
   <div class="container">
     <div class="row" style="border: 1px solid black">
@@ -27,7 +28,44 @@
     <div class="row" style="border: 1px solid black">
       <div class="col-md-12">{{ graphic_2|safe }}</div>
     </div>
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.2.3/jquery.min.js"></script>
+      <button id="showHideContent" class="btn btn-primary">Показати/Сховати таблицю тривалості температурних режимів</button>
+
+      <div id="content" style="display:none;">
+        <table class="table">
+          <thead class="thead-dark">
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Температура, t°C</th>
+              <th scope="col">Тривалість t, год</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for x,y in z %}
+            <tr>
+              <th scope="row">{{ forloop.counter }}</th>
+              <td>{{ x }}</td>
+              <td>{{ y }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    <script type="text/javascript">
+      $(document).ready(function(){
+          $("#showHideContent").click(function () {
+              if ($("#content").is(":hidden")) {
+                  $("#content").show("slow");
+              } else {
+                  $("#content").hide("slow");
+              }
+              return false;
+          });
+      });
+    </script>
+    
   </div>
+
   {% endif %}
   {% if graphic_3 %}
   <div class="container">
