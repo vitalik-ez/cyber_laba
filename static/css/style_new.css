@@ -1,0 +1,38 @@
+
+header{
+ 
+  height: 70px;
+}
+
+.left_area h3{
+  margin-top: -22px;
+  font-size: 23.5px;
+}
+.sidebar{
+	height: 100vh;
+}
+label #sidebar_btn{
+  margin-top: -5px;
+}
+#gray_block{
+	background-color: rgb(201, 201, 201, 0.25);
+	height: 340px;
+}
+
+#top_header{
+	margin-top: 20px;
+}
+.sidebar a:hover{
+  background: #19B3D3;
+  text-decoration: none;
+  color: white;
+}
+#top{
+	margin-top: 25px;
+}
+#top_button{
+  margin-top: 45px;
+}
+#top_button_danger{
+  margin-bottom: -100px;
+}

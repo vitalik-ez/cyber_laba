@@ -21,7 +21,7 @@ from . import views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    path('',views.IndexView.as_view(), name='index_main'),
+    path('',views.IndexView.as_view(), name='dashboard'),
     #url(r'^$', RedirectView.as_view(url='/laba/'), name='index'),
     #url(r'^app1/',  include(('app1.urls', 'app1'), namespace='app1', )),
     path('laba/', include('laba.urls')),

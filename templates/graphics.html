@@ -1,66 +1,67 @@
-{% extends "base.html" %}
-
+{% extends "dashboard.html" %}
+{% load static %}
 {% block head %}
 {{ block.super }}
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+  <link rel="stylesheet" href="{% static 'css/style_new.css' %}">
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 {% endblock %}
 
-{% block content %}
+  {% block content %}
 
-<div class="container">
-  <h1>Графіки</h1>
-  <p class="lead">Here we go...</p>
-</div>
+  <div class="container">
+    <h1>Графіки</h1>
+    <p class="lead">Here we go...</p>
+  </div>
+  <!-- /.container -->
+  {{ data1 }} {{ data2 }}
+  {% if graphic_1 %}
+  <div class="container">
+    <div class="row" style="border: 1px solid black">
+      <div class="col-md-12">{{ graphic_1|safe }}</div>
+    </div>
+  </div>
+  {% endif %}
+  {% if graphic_2 %}
+  <div class="container">
+    <div class="row" style="border: 1px solid black">
+      <div class="col-md-12">{{ graphic_2|safe }}</div>
+    </div>
+  </div>
+  {% endif %}
+  {% if graphic_3 %}
+  <div class="container">
+    <div class="row" style="border: 1px solid black;">
+      <div class="col-md-12" style="display: flex;align-items: center; justify-content: center;">{{ graphic_3|safe }}</div>
+    </div>
+  </div>
+  {% endif %}
+  {% if graphic_4 %}
+  <div class="container">
+    <div class="row" style="border: 1px solid black">
+      <div class="col-md-12">{{ graphic_4|safe }}</div>
+    </div>
+  </div>
+  {% endif %}
+  {% if graphic_5 %}
+  <div class="container">
+    <div class="row" style="border: 1px solid black">
+      <div class="col-md-12">{{ graphic_5|safe }}</div>
+    </div>
+  </div>
+  {% endif %}
+  {% if graphic_6 %}
+  <div class="container">
+    <div class="row" style="border: 1px solid black">
+      <div class="col-md-12">{{ graphic_6|safe }}</div>
+    </div>
+  </div>
+  {% endif %}
 <!-- /.container -->
-{{ data1 }} {{ data2 }}
-{% if graphic_1 %}
-<div class="container">
-  <div class="row" style="border: 1px solid black">
-    <div class="col-md-12">{{ graphic_1|safe }}</div>
-  </div>
-</div>
-{% endif %}
-{% if graphic_2 %}
-<div class="container">
-  <div class="row" style="border: 1px solid black">
-    <div class="col-md-12">{{ graphic_2|safe }}</div>
-  </div>
-</div>
-{% endif %}
-{% if graphic_3 %}
-<div class="container">
-  <div class="row" style="border: 1px solid black;">
-    <div class="col-md-12" style="display: flex;align-items: center; justify-content: center;">{{ graphic_3|safe }}</div>
-  </div>
-</div>
-{% endif %}
-{% if graphic_4 %}
-<div class="container">
-  <div class="row" style="border: 1px solid black">
-    <div class="col-md-12">{{ graphic_4|safe }}</div>
-  </div>
-</div>
-{% endif %}
-{% if graphic_5 %}
-<div class="container">
-  <div class="row" style="border: 1px solid black">
-    <div class="col-md-12">{{ graphic_5|safe }}</div>
-  </div>
-</div>
-{% endif %}
-{% if graphic_6 %}
-<div class="container">
-  <div class="row" style="border: 1px solid black">
-    <div class="col-md-12">{{ graphic_6|safe }}</div>
-  </div>
-</div>
-{% endif %}
-<!-- /.container -->
 
-
-<div class="container">
-  <p>&ensp;</p>
-  <a class="btn btn-primary pull-right" href="{% url 'laba' %}">Назад</a>
-</div>
+<div class="d-flex justify-content-between" id="top_button">
+    <a class="btn btn-primary pull-right" style="text-align: right; visibility: hidden;" >Назад</a>
+     <a href="{% url 'laba' %}"><button type="submit" class="btn btn-primary pull-right" id="top_button">Назад</button></a>
+  </div> 
 
 {% endblock %}

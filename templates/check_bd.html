@@ -1,16 +1,36 @@
-{% extends "base.html" %}
-
-
+{% extends "dashboard.html" %}
+{% load static %}
+{% block head %}
+{{ block.super }}
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+	<link rel="stylesheet" href="{% static 'css/style_new.css' %}">
+{% endblock %}
 {% block content %}
 
-
-
-<div class="container">
-	{% if errors %}
-	<h1> Помилок було виправлено: {{ errors }} </h1>
+<div class="container" id="gray_block">
+	<h2 align="center">Перевірка бази даних</h2>
+	{% if succeed %}
+		<h6 id="top">{{ succeed }}</h6>
 	{% else %}
-	<h1> Помилок немає в БД!!! </h1>
+		{% if error_t %}
+			<h6>{{ error_t }}</h6>
+			<h6>{{ error_d }}</h6>
+			{% for error in error_list %}
+			    <span>{{ error }}</span><br>
+			{% endfor %}
+			<p></p>
+			<a class="btn btn-danger pull-right" style="text-align: right;" href="{% url 'check_bd' %}">Виправити дані</a>
+		{% else %}
+			<h6 id="top">Всі дані в базі даних були відновлені. Пропусків в даті та часі немає. Все вірно</h6>
+		{% endif %}
 	{% endif %}
+
+	
+	<div class="d-flex justify-content-between" id="top_button">
+		<a class="btn btn-primary pull-right" style="text-align: right; visibility: hidden;" >Назад</a>
+     <a href="{% url 'laba' %}"><button type="submit" class="btn btn-primary pull-right" id="top_button">Назад</button></a>
+	</div> 
+	
 </div>
 
 {% endblock %}

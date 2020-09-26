@@ -1,4 +1,4 @@
 from django.views.generic import TemplateView
 
 class IndexView(TemplateView):
-    template_name = "index_main.html"
+    template_name = "dashboard.html"

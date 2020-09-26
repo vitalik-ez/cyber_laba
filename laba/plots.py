@@ -18,9 +18,9 @@ from math import floor, ceil
 import plotly.express as px
 
 def dataSampling(datetimeObj_1, datetimeObj_2):
-    conn = sqlite3.connect("test_check.db")
+    conn = sqlite3.connect("main.db")
     cursor = conn.cursor()
-    month_table = ['January', 'February', 'March']
+    month_table = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
 
     sql = f"SELECT id from {month_table[datetimeObj_1.month - 1]} WHERE UTC = '{datetimeObj_1.time()}' AND number_month = {datetimeObj_1.day}"
     cursor.execute(sql)

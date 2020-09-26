@@ -15,6 +15,8 @@ from .import plots
 import plotly.graph_objs as go
 from plotly.offline import plot
 
+from django.shortcuts import redirect
+from django.urls import reverse
 
 import sqlite3
 from collections import Counter
@@ -51,54 +53,10 @@ class FormView(View):
 		 'graphic_6': graphic_6}
 		return render(request, 'graphics.html', context)
 
-class Graph(View):
 
-	def get(self, request):
-		return render(request, 'plot_graph.html', {})
-
-	def post(self, request):
-
-		data1 = request.POST.get('data1')
-		data2 = request.POST.get('data2')
-		time = request.POST.get('time')
-		graphic = plots.TemperatureMode(data1, data2, time)
-
-		context = {'data1': data1, 'data2': data2, 'time': time, 'plot': graphic[0], 'x_y': graphic[1]}
-		return render(request, 'plot_graph.html', context)
-
-class RosaWindy(View):
-
-	def get(self, request):
-		return render(request, 'plot_rosa_windy.html', {})
-
-	def post(self, request):
-
-		data1 = request.POST.get('data1')
-		data2 = request.POST.get('data2')
-		time = request.POST.get('time')
-		graphic = plots.RosaWindy(data1, data2, time)
-
-		context = {'data1': data1, 'data2': data2, 'time': time, 'plot': graphic}
-		return render(request, 'plot_rosa_windy.html', context)
-
-
-class WindActivity(View):
-
-	def get(self, request):
-		return render(request, 'plot_wind_activity.html', {})
-
-	def post(self, request):
-
-		data1 = request.POST.get('data1')
-		data2 = request.POST.get('data2')
-		time = request.POST.get('time')
-		graphic = plots.PlotWindActivity(data1, data2, time)
-
-		context = {'data1': data1, 'data2': data2, 'time': time, 'plot': graphic}
-		return render(request, 'plot_wind_activity.html', context)
 
 def check_bd(request):
-	conn = sqlite3.connect("test_check.db")
+	conn = sqlite3.connect("main.db")
 	cursor = conn.cursor()
 	month_table = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
 	error = 0
@@ -159,11 +117,52 @@ def check_bd(request):
 	else:
 	    error_day = "Перевірте всі дні та години в БД"
 	conn.close()
-	return HttpResponse("Помилок, {}. {}".format(error, error_day))
+	return redirect('/laba/check_error')
 
 
 
-
+def сheck_error(request):
+	conn = sqlite3.connect("main.db")
+	cursor = conn.cursor()
+	month_table = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+	error = 0
+	error_day = 0
+	error_list = []
+	check_month = []
+	for i in month_table:
+	    sql = f"SELECT * from {i} WHERE number_month IS NULL OR T IS NULL"
+	    cursor.execute(sql)
+	    data = cursor.fetchall()
+	    error += len(data)
+	    if len(data) > 0:
+	    	error_list.append(str(data[0][1]) + " " + i + " " + data[0][2] + "  T=" + str(data[0][3]))
+	    	#print(str(data[0][1]) + " " + i + " " + data[0][2] + "  T=" + str(data[0][3]))
+	    
+	    sql = f"SELECT number_month from {i}"
+	    cursor.execute(sql)
+	    data = cursor.fetchall()
+	    list_day = []
+	    for i in data:
+	        list_day.append(i[0])
+	    c = Counter(list_day)
+	    check = [ True  for i in range(data[0][0],data[-1][0] + 1) if c[i] == 48]
+	    check = True if len(check) == data[-1][0] else False
+	    check_month.append(check)
+	if all(check_month):
+	    error_day = "Всі дні та всі часи"
+	else:
+	    error_day = "Перевірте всі дні та години в БД"
+	conn.close()
+	
+	if error == 0 and error_day == "Всі дні та всі часи":
+		errors = {'succeed': 'Всі дані в базі даних перевірені. Пропусків в даті та часі немає. Все вірно'}
+	else:
+		if error != 0:
+			error_t = 'Пропусків в стовпці температури було виявлено: ' + str(error)
+		if error_day == "Перевірте всі дні та години в БД":
+			error_day = 'Пропусків в даті та часі: ' + str(error_day)
+		return render(request, 'check_bd.html', { 'error_t': error_t, 'error_day': error_day, 'error_list': error_list})
+	return render(request, 'check_bd.html', errors)
 
 
 
