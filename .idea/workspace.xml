@@ -18,7 +18,7 @@
   </component>
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$USER_HOME$/PycharmProjects/laba" />
   </component>
   <component name="SvnConfiguration">
     <configuration />
@@ -35,5 +35,15 @@
   </component>
   <component name="UnknownFeatures">
     <option featureType="com.intellij.fileTypeFactory" implementationName="*.css" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="456" y="-790" key="FileChooserDialogImpl" timestamp="1601222157081">
+      <screen x="-164" y="-1050" width="1680" height="1010" />
+    </state>
+    <state x="456" y="-790" key="FileChooserDialogImpl/0.0.1366.728/-164.-1050.1680.1010@-164.-1050.1680.1010" timestamp="1601222157081" />
+    <state x="371" y="-721" key="com.intellij.ide.util.TipDialog" timestamp="1601222089839">
+      <screen x="-164" y="-1050" width="1680" height="1010" />
+    </state>
+    <state x="371" y="-721" key="com.intellij.ide.util.TipDialog/0.0.1366.728/-164.-1050.1680.1010@-164.-1050.1680.1010" timestamp="1601222089839" />
   </component>
 </project>

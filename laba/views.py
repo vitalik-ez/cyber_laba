@@ -49,7 +49,6 @@ class FormView(View):
 		graphic_6 = plots.graphic_6(datetimeObj_1, datetimeObj_2)
 
 		z = [ (i,j) for i,j in zip(x,y)]
-		print(z)
 
 		context = {'data1': datetimeObj_1, 'data2': datetimeObj_2, 'graphic_1': graphic_1,
 		'graphic_2': graphic_2,'graphic_3': graphic_3,'graphic_4': graphic_4, 'graphic_5': graphic_5,
@@ -137,13 +136,13 @@ def сheck_error(request):
 	error_list = []
 	check_month = []
 	for i in month_table:
-	    sql = f"SELECT * from {i} WHERE number_month IS NULL OR T IS NULL"
+	    sql = f"SELECT * from {i} WHERE number_month IS NULL OR T IS NULL OR FF IS NULL"
 	    cursor.execute(sql)
 	    data = cursor.fetchall()
 	    error += len(data)
 	    if len(data) > 0:
-	    	error_list.append(str(data[0][1]) + " " + i + " " + data[0][2] + "  T=" + str(data[0][3]))
-	    	#print(str(data[0][1]) + " " + i + " " + data[0][2] + "  T=" + str(data[0][3]))
+	    	error_list.append(str(data[0][1]) + " " + i + " " + data[0][2] + "  T=" + str(data[0][3]) + " FF=" + str(data[0][5]))
+	    	print(data)
 	    
 	    sql = f"SELECT number_month from {i}"
 	    cursor.execute(sql)

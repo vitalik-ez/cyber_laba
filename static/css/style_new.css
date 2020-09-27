@@ -36,3 +36,7 @@ label #sidebar_btn{
 #top_button_danger{
   margin-bottom: -100px;
 }
+#top_button_end{
+  margin-top: 45px;
+  margin-bottom: 100px;
+}
