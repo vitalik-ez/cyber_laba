@@ -2,6 +2,7 @@
 {% load static %}
 {% block head %}
 {{ block.super }}
+<title>Графіки</title>
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
   <link rel="stylesheet" href="{% static 'css/style_new.css' %}">
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
@@ -14,7 +15,6 @@
     <p class="lead">Діапазон введенних дат: {{ data1 }} - {{ data2 }} </p>
     <p></p>
   </div>
-  <!-- /.container -->
   
   {% if graphic_1 %}
   <div class="container">
@@ -95,11 +95,10 @@
     </div>
   </div>
   {% endif %}
-<!-- /.container -->
 
-<div class="d-flex justify-content-between" id="top_button">
+<div class="d-flex justify-content-between container" id="top_button">
     <a class="btn btn-primary pull-right" style="text-align: right; visibility: hidden;" >Назад</a>
-     <a href="{% url 'laba' %}"><button type="submit" class="btn btn-primary pull-right" id="top_button">Назад</button></a>
+     <a href="{% url 'laba' %}"><button type="submit" class="btn btn-primary pull-right" id="top_button" style="height: 40px; width: 80px;font-size: 18px;">Назад</button></a>
   </div> 
   <div style="height: 60px;"></div>
 

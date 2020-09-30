@@ -2,12 +2,14 @@
 {% load static %}
 {% block head %}
 {{ block.super }}
+<title>Перевірка бази даних</title>
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
 	<link rel="stylesheet" href="{% static 'css/style_new.css' %}">
 {% endblock %}
 {% block content %}
 
-<div class="container" id="gray_block">
+<div class="container">
+	<div class="container" id="gray_block">
 	<h2 align="center">Перевірка бази даних</h2>
 	{% if succeed %}
 		<h6 id="top">{{ succeed }}</h6>
@@ -18,13 +20,18 @@
 			{% for error in error_list %}
 			    <span>{{ error }}</span><br>
 			{% endfor %}
+			<h6>{{ error_speed }}</h6>
+			{% for error in error_speed_list %}
+			    <span>{{ error }}</span><br>
+			{% endfor %}
 			<p></p>
 			<a class="btn btn-danger pull-right" style="text-align: right;" href="{% url 'check_bd' %}">Виправити дані</a>
 		{% else %}
 			<h6 id="top">Всі дані в базі даних були відновлені. Пропусків в даті та часі немає. Все вірно</h6>
 		{% endif %}
-	{% endif %}
 
+	{% endif %}
+</div>
 	
 	<div class="d-flex justify-content-between" id="top_button">
 		<a class="btn btn-primary pull-right" style="text-align: right; visibility: hidden;" >Назад</a>

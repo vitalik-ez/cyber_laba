@@ -1,6 +1,7 @@
 {% extends "dashboard.html" %}
 {% load static %}
     {% block head %}
+    <title>Введення даних</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" charset="utf-8"></script>
     <!-- Bootstrap 4 -->
@@ -39,7 +40,7 @@
       <form action="graphics/" method="post">
         <div class="row" id="top_header">
         <div class="col-3">
-          <h6>Виберіть місто</h6>
+          <h6>Виберіть місто:</h6>
           <select class="selectpicker" data-style="btn-primary" required>
             <option>Київ</option>
             <option>Львів</option>
@@ -55,7 +56,7 @@
           
           <div class="col-9">
             <div class="row">
-              <div class="col-12"><h6>Виберіть проміжок часу</h6></div>
+              <div class="col-12"><h6>Виберіть проміжок часу:</h6></div>
               <div class="w-100"></div>
 
               <div class="col-4">

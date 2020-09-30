@@ -1,23 +1,10 @@
-import datetime
-import glob
-import logging
-import os
-
 import plotly.graph_objs as go
 from plotly.offline import plot
-
-import pandas as pd
 import sqlite3
 from datetime import datetime, date, timedelta
-
-import pandas as pd
-
 import csv
 from math import floor, ceil
 
-import plotly.express as px
-
-import numpy as np
 
 def dataSampling(datetimeObj_1, datetimeObj_2):
     conn = sqlite3.connect("main.db")
@@ -101,7 +88,6 @@ def graphic_1(list_dict, datetimeObj_1, datetimeObj_2):
 
 
     plot_div = plot(fig, output_type='div', include_plotlyjs=False)
-    #logger.info("Plotting number of points {}.".format(len(x_data)))
     return plot_div
 
 def graphic_2(list_dict):
@@ -123,9 +109,6 @@ def graphic_2(list_dict):
     figure=go.Figure(data=data,layout=layout)
     plot_div = plot(figure, auto_open=False, output_type='div')
 
-    #print(x)
-    #print(y)
-
     return (plot_div, x, y)
 
 
@@ -133,22 +116,14 @@ def graphic_3(list_dict):
     data = []
     for i in list_dict:
         data.append((i['dd'], i['FF']))
-    #print(data)
     v_max = max([ i[1] for i in data])
-    #print("V_max = ", v_max)
     range = [ 0, v_max*0.25, v_max*0.5, v_max*0.75, v_max]
-    calm = 0
     count = 0
-    #change = 0
     d = {}
     for i in data:
         count += 1
-        if i[0] == None:
-            calm += 1
-        #if i[0] == 'Переменный':
-            #change += 1
         if i[0] in d:
-            if 0 < i[1] <= range[1]:
+            if 0 <= i[1] <= range[1]:
                 d[i[0]][0] += 1
             if range[1] < i[1] <= range[2]:
                 d[i[0]][1] += 1
@@ -158,7 +133,7 @@ def graphic_3(list_dict):
                 d[i[0]][3] += 1
         else:
             d[i[0]] = [0,0,0,0]
-            if 0 < i[1] <= range[1]:
+            if 0 <= i[1] <= range[1]:
                 d[i[0]] = [1, 0 , 0, 0]
             if range[1] < i[1] <= range[2]:
                 d[i[0]] = [0, 1, 0, 0]
@@ -167,12 +142,21 @@ def graphic_3(list_dict):
             if range[3] < i[1] <= range[4]:
                 d[i[0]] = [0, 0, 0, 1]
 
-    list_dir = ['С-З', 'Северный', 'Переменный', 'Ю-В', 'С-В', 'Восточный', 'Южный', 'Ю-З', 'Западный']
+    list_dir = ['С-З', 'Северный', 'Переменный', 'Ю-В', 'С-В', 'Восточный', 'Южный', 'Ю-З', 'Западный', None]
     for i in list_dir:
         if i not in d:
             d[i] = [0, 0, 0, 0]
-    fig = go.Figure()
 
+    suma = count - sum(d['Переменный']) - sum(d[None])
+    suma_list = 0
+    for i in d:
+        if i != 'Переменный' and i != None:
+            d[i] = [ j/suma*100 for j in d[i]]
+        if i != 'Переменный' and i != None:
+            suma_list += sum(d[i])
+
+    fig = go.Figure()
+    print(suma_list)
     fig.add_trace(go.Barpolar(
         r=[d['Северный'][0], d['С-З'][0], d['Западный'][0], d['Ю-З'][0], d['Южный'][0], d['Ю-В'][0], d['Восточный'][0], d['С-В'][0]],
         name='< ' + str(range[1]) +' м/с',
@@ -195,18 +179,30 @@ def graphic_3(list_dict):
         marker_color='rgb(81, 45, 56)'
     ))
 
-    fig.update_traces(text=['Північ', 'Північний захід','Захід', 'Південний захід','Південь', 'Південний схід','Схід', 'Північний схід' ])
+    #fig.update_traces(text=['Північ', 'Північний захід','Захід', 'Південний захід','Південь', 'Південний схід','Схід', 'Північний схід' ])
     fig.update_layout(
         title='Троянда вітрів',
         font_size=16,
-        legend_font_size=16,
-        #polar_radialaxis_ticksuffix='%',
+        legend_font_size=18,
+        polar_radialaxis_ticksuffix='%',
+        #polar_angularaxis_rotation=90,
+        #polar_angularaxis_direction='clockwise',
+        polar_angularaxis_tickmode = 'array',
+        polar_angularaxis_tickvals=[0, 45, 90, 135, 180, 225, 270, 315, 0],
+        polar_angularaxis_ticktext=['Північ', 'Північний захід','Захід', 'Південний захід','Південь', 'Південний схід','Схід', 'Північний схід' ],
+        #polar_angularaxis_tickfont_size = 16,
+        #polar_radialaxis_tickmode = 'linear',
+        #polar_radialaxis_angle = 45,
+        #polar_radialaxis_tick0 = 5,
+        #polar_radialaxis_dtick = 5,
+        #polar_radialaxis_tickangle = 100,
+        #polar_radialaxis_tickfont_size = 14,
         polar_angularaxis_rotation=90,
         width=700, height=700,
     )
-    n = int(calm/count * 100) / 100
+    n = (sum(d[None])/count * 100)
     fig.add_annotation( # add a text callout with arrow
-        text=str(n) + "%",  x=0.5, y=0.5, showarrow=False
+        text=str(n)[0:4] + "%",  x=0.5, y=0.5, showarrow=False
     )
     
     fig.update_layout(legend=dict(
@@ -217,7 +213,7 @@ def graphic_3(list_dict):
         xanchor="center",
         x=0.5,
         font=dict(size=14)),
-        polar=dict(hole=0.1, radialaxis=dict(showticklabels=False, ticks='', linewidth=0)),
+        polar=dict(hole=0.1, radialaxis=dict(showticklabels=True, ticks='', linewidth=0)),
         margin=dict(t=110),
     )
 
@@ -244,7 +240,7 @@ def graphic_4(list_dict):
     trace1 = go.Bar(x=x, y=y)
 
     data=go.Data([trace1])
-    layout=go.Layout(title="Розподіл вітрового потенціалу за швидкостями, год", xaxis={'title':'М/С'}, yaxis={'title':'t,ГОД'})
+    layout=go.Layout(title="Розподіл вітрового потенціалу за швидкостями, год", xaxis={'title':'м/с'}, yaxis={'title':'t,ГОД'})
     figure=go.Figure(data=data,layout=layout)
     plot_div = plot(figure, auto_open=False, output_type='div')
 
@@ -261,10 +257,6 @@ def graphic_5(datetimeObj_1, datetimeObj_2):
 
     list_sun = list_sun[2:-1]
 
-    #datetimeObj_1 = datetime.strptime('01/01/2012 09:30', '%d/%m/%Y %H:%M')
-    #datetimeObj_2 = datetime.strptime('07/02/2012 14:30', '%d/%m/%Y %H:%M')
-
-
     first_point = datetime(datetimeObj_1.year, datetimeObj_1.month, datetimeObj_1.day, datetimeObj_1.hour, datetimeObj_1.minute) - datetime(2012, 1, 1, 0, 0)
     first_point = first_point.days * 24 + first_point.seconds / 3600
 
@@ -276,7 +268,8 @@ def graphic_5(datetimeObj_1, datetimeObj_2):
         if i == 8759:
             break
         if list_sun[i][3] != '0':
-            x.append(list_sun[i][1] + " " + list_sun[i][0][0:5] + "/2012")
+            #x.append(list_sun[i][1] + " " + list_sun[i][0][0:5] + "/2012")
+            x.append(list_sun[i][1] + " " + list_sun[i][0][3:6] + list_sun[i][0][0:2] + "/2012")
             y.append(int(list_sun[i][3]))
 
     data = [go.Bar(
@@ -285,6 +278,7 @@ def graphic_5(datetimeObj_1, datetimeObj_2):
     )]
     layout=go.Layout(title="Інтенсивність сонячної інсоляції", xaxis={'title':'Дата'}, yaxis={'title':'Вт/м2'})
     fig = go.Figure(data=data, layout=layout)
+
     step = int(floor(len(x)/20))
     if step != 0 :
         fig.update_xaxes(tickangle=45, tickmode = 'array', tickvals = x[0::step])
@@ -324,14 +318,11 @@ def graphic_6(datetimeObj_1, datetimeObj_2):
             d[i] = d[i] + tm3
         else:
             d[i] = timedelta(hours=1, minutes=0, seconds=0)
-    #print(d)
 
     x = [ i for i in d.keys() ]
     y = [ i.days * 24 + i.seconds/3600 if i.days != 0 else i.seconds / 3600 for i in d.values() ]
 
     trace1 = go.Bar(x=x, y=y)
-    #print(x)
-    #print(y)
 
     data=go.Data([trace1])
     layout=go.Layout(title="Тривалість режимів сонячної активності", xaxis={'title':'Вт/м2'}, yaxis=dict(title='t,ГОД'))
@@ -340,7 +331,7 @@ def graphic_6(datetimeObj_1, datetimeObj_2):
     #figure.update_xaxes() # linear range
 
     #figure.update_xaxes(type="log")
-    figure.update_yaxes(type="log", range=[np.log10(0), np.log10(80)])
+    #figure.update_yaxes(type="log", range=[np.log10(0), np.log10(80)])
     #figure.update_yaxes(range=[0, 0.4], row=1, col=1)
     plot_div = plot(figure, auto_open=False, output_type='div')
 

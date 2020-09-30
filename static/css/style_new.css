@@ -40,3 +40,10 @@ label #sidebar_btn{
   margin-top: 45px;
   margin-bottom: 100px;
 }
+
+.container #gray_block{
+  height: 350px;
+}
+.container #top_button{
+  margin-top: 15px;
+}
