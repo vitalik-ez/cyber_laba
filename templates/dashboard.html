@@ -14,21 +14,25 @@
 
     {% endblock %}
   </head>
-  <body>
+  <body class="d-flex flex-column">
 
     <input type="checkbox" id="check">
     <!--header area start-->
     <header>
-      <label for="check">
-        <i class="fas fa-bars" id="sidebar_btn"></i>
-      </label>
-      <div class="left_area">
+      <div class="block_1">
+        <label for="check">
+          <i class="fas fa-bars" id="sidebar_btn"></i>
+        </label>
+      </div>
+      
+      <div class="left_area" class="check_1">
         <h3>sunny <span>design</span></h3>
       </div>
       <!--<div class="right_area">
         <a href="#" class="logout_btn">Logout</a>
       </div>-->
     </header>
+
     <!--header area end-->
     <!--mobile navigation bar start-->
     <div class="mobile_nav">
@@ -37,37 +41,30 @@
         <i class="fa fa-bars nav_btn"></i>
       </div>
       <div class="mobile_nav_items">
-        <a href="{% url 'dashboard' %}"><i class="fas fa-desktop"></i><span>Головна</span></a>
+      
         <a href="{% url 'laba' %}"><i class="fas fa-cogs"></i><span>Введення даних</span></a>
-        <a href="#"><i class="fas fa-th"></i><span>Практична робота 2</span></a>
-        <a href="#"><i class="fas fa-th"></i><span>Практична робота 3</span></a>
-        <a href="#"><i class="fas fa-th"></i><span>Практична робота 4</span></a>
-        <!--<a href="#"><i class="fas fa-table"></i><span>Tables</span></a>
-        <a href="#"><i class="fas fa-info-circle"></i><span>About</span></a>
-        <a href="#"><i class="fas fa-sliders-h"></i><span>Settings</span></a>-->
+        <a href="{% url 'graphics' %}"><i class="fas fa-th"></i><span>Практична робота №1</span></a>
+        <a href="#"><i class="fas fa-th"></i><span>Практична робота №2</span></a>
+        <a href="#"><i class="fas fa-th"></i><span>Практична робота №3</span></a>
+        <a href="#"><i class="fas fa-th"></i><span>Практична робота №4</span></a>
+        <a href="#"><i class="fas fa-th"></i><span>Практична робота №5</span></a>
       </div>
     </div>
     <!--mobile navigation bar end-->
     <!--sidebar start-->
     <div class="sidebar">
-      <!--<div class="profile_info">
-        <img src="1.png" class="profile_image" alt="">
-        <h4>Jessica</h4>
-      </div>-->
-      <a href="{% url 'dashboard' %}"><i class="fas fa-desktop"></i><span>Головна</span></a>
       <a href="{% url 'laba' %}"><i class="fas fa-cogs"></i><span>Введення даних</span></a>
-      <a href="#"><i class="fas fa-th"></i><span>Практична робота 2</span></a>
-      <a href="#"><i class="fas fa-th"></i><span>Практична робота 3</span></a>
-      <a href="#"><i class="fas fa-th"></i><span>Практична робота 4</span></a>
+      <a href="{% url 'graphics' %}"><i class="fas fa-th"></i><span>Практична робота №1</span></a>
+      <a href="#"><i class="fas fa-th"></i><span>Практична робота №2</span></a>
+      <a href="#"><i class="fas fa-th"></i><span>Практична робота №3</span></a>
+      <a href="#"><i class="fas fa-th"></i><span>Практична робота №4</span></a>
+      <a href="#"><i class="fas fa-th"></i><span>Практична робота №5</span></a>
     </div>
     <!--sidebar end-->
 
     <div class="content">
       {% block content %}
-      <div class="card">
-        <h2>Проектування кібер-енергетичних систем</h2>
-        <h4>ТІ-82 Єзгор Віталій</h4>
-      </div>
+
       {% endblock %}
     </div>
 
@@ -78,6 +75,23 @@
       });
     });
     </script>
+
+  <style>
+    .footer {
+      position: fixed;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      height: 30px;
+      background-color: #2f323a;
+      color: white;
+      text-align: center;
+    }
+    </style>
+
+    <div class="footer">
+      <p>© 2020 Всі права захищено.</p>
+    </div>
 
   </body>
 </html>

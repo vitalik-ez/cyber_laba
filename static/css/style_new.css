@@ -5,8 +5,8 @@ header{
 }
 
 .left_area h3{
-  margin-top: -22px;
-  font-size: 23.5px;
+  margin-top: -30px;
+  font-size: 28px;
 }
 .sidebar{
 	height: 100vh;
@@ -47,3 +47,4 @@ label #sidebar_btn{
 .container #top_button{
   margin-top: 15px;
 }
+

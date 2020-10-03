@@ -18,19 +18,43 @@ from collections import Counter
 from datetime import datetime 
 
 
-def test_form(request):
+def main_form(request):
 	return render(request, 'date.html')
 
 class FormView(View):
 
 	def get(self, request):
-		return render(request, 'graphics.html', {})
+		with open('date.txt') as f:
+			content = f.readlines()
+		content = [x.strip() for x in content]
+		if len(content) == 0:
+			return render(request, 'graphics.html', {})
+		datetimeObj_1 = datetime.strptime(content[-2], '%d/%m/%Y %H:%M')
+		datetimeObj_2 = datetime.strptime(content[-1], '%d/%m/%Y %H:%M')
+		
+		list_dict = plots.dataSampling(datetimeObj_1, datetimeObj_2)
+		graphic_1 = plots.graphic_1(list_dict, content[-2], content[-1])
+		graphic_2, x, y = plots.graphic_2(list_dict)
+		graphic_3 = plots.graphic_3(list_dict)
+		graphic_4 = plots.graphic_4(list_dict)
+
+		graphic_5 = plots.graphic_5(datetimeObj_1, datetimeObj_2)
+		graphic_6 = plots.graphic_6(datetimeObj_1, datetimeObj_2)
+
+		z = [ (i,j) for i,j in zip(x,y)]
+
+		context = {'data1': content[-2], 'data2': content[-1], 'graphic_1': graphic_1,
+		'graphic_2': graphic_2,'graphic_3': graphic_3,'graphic_4': graphic_4, 'graphic_5': graphic_5,
+		 'graphic_6': graphic_6, 'z':z}
+		return render(request, 'graphics.html', context)
 
 	def post(self, request):
 		 
 		datetimeObj_1 = datetime.strptime(request.POST.get('date_1'), '%d/%m/%Y %H:%M')
 		datetimeObj_2 = datetime.strptime(request.POST.get('date_2'), '%d/%m/%Y %H:%M')
-
+		with open('date.txt', 'a') as the_file:
+			the_file.write(request.POST.get('date_1')+'\n')
+			the_file.write(request.POST.get('date_2')+'\n')
 		list_dict = plots.dataSampling(datetimeObj_1, datetimeObj_2)
 		graphic_1 = plots.graphic_1(list_dict, request.POST.get('date_1'), request.POST.get('date_2'))
 		graphic_2, x, y = plots.graphic_2(list_dict)
@@ -178,11 +202,11 @@ def сheck_error(request):
 		errors = {'succeed': 'Всі дані в базі даних перевірені. Пропусків в даті та часі немає. Все вірно'}
 	else:
 		if error != 0:
-			error = 'Пропусків в стовпці температури було виявлено: ' + str(error)
+			error = 'Пропуски в стовпці температури: ' + str(error)
 		if error_day == "Перевірте всі дні та години в БД":
 			error_day = 'Пропусків в даті та часі: ' + str(error_day)
 		if error_speed !=0:
-			error_speed = "Знайдено від'ємні значення у швидкості вітру: " + str(error_speed)
+			error_speed = "Від'ємні значення у стовпці швидкості вітру: " + str(error_speed)
 		return render(request, 'check_bd.html', { 'error_t': error, 'error_day': error_day,'error_list': error_list, 'error_speed':error_speed, 'error_speed_list':error_speed_list})
 	return render(request, 'check_bd.html', errors)
 

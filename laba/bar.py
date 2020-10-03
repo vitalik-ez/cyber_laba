@@ -5,7 +5,6 @@ from datetime import datetime, date, timedelta
 import csv
 from math import floor, ceil
 
-
 def dataSampling(datetimeObj_1, datetimeObj_2):
     conn = sqlite3.connect("main.db")
     cursor = conn.cursor()
@@ -45,6 +44,7 @@ def dataSampling(datetimeObj_1, datetimeObj_2):
 
     conn.close()
     return list_dict
+
 
 
 
@@ -150,7 +150,7 @@ def graphic_3(list_dict):
     suma_list = 0
     for i in d:
         if i != 'Переменный' and i != None:
-            d[i] = [ round(j/suma*100,3) for j in d[i]]
+            d[i] = [ j/suma*100 for j in d[i]]
         if i != 'Переменный' and i != None:
             suma_list += sum(d[i])
 
@@ -197,7 +197,7 @@ def graphic_3(list_dict):
         #polar_radialaxis_tickangle = 100,
         #polar_radialaxis_tickfont_size = 14,
         polar_angularaxis_rotation=90,
-        width=1070, height=700,
+        width=700, height=700,
     )
     n = (sum(d[None])/count * 100)
     fig.add_annotation( # add a text callout with arrow
@@ -205,7 +205,7 @@ def graphic_3(list_dict):
     )
     
     fig.update_layout(legend=dict(
-        title="Змінний вітер: " + str(round((sum(d[None])/count * 100), 3))  + "%. Швидкіть вітру в м/с",
+        title="Швидкіть вітру в м/с",
         orientation="h",
         yanchor="middle",  
         y=-0.1,
@@ -271,34 +271,18 @@ def graphic_5(datetimeObj_1, datetimeObj_2):
             x.append(list_sun[i][1] + " " + list_sun[i][0][3:6] + list_sun[i][0][0:2] + "/2012")
             y.append(int(list_sun[i][3]))
 
-    trace1 = go.Scatter(
-        x=x,
-        #x=[ str(i['number_month']) + "." + i['month'] + ".2012" for i in list_dict],
-        y=y
-    )
-
-    data = [trace1]
-    layout = go.Layout(
-        # autosize=False,
-        # width=900,
-        # height=500,
-        title="Інтенсивність сонячної інсоляції",
-        xaxis=dict(
-            title="Дата"
-        ),
-        yaxis=dict(
-            title="ETRN (Вт/м^2)"
-        )
-    )
+    data = [go.Bar(
+       x = x,
+       y = y
+    )]
+    layout=go.Layout(title="Інтенсивність сонячної інсоляції", xaxis={'title':'Дата'}, yaxis={'title':'Вт/м2'})
     fig = go.Figure(data=data, layout=layout)
-    fig['data'][0]['showlegend']=True
-    fig['data'][0]['name']='ETRN (Вт/м^2)'
 
     step = int(floor(len(x)/20))
     if step != 0 :
         fig.update_xaxes(tickangle=45, tickmode = 'array', tickvals = x[0::step])
+    plot_div = plot(fig, auto_open=False, output_type='div')
 
-    plot_div = plot(fig, output_type='div', include_plotlyjs=False)
     return plot_div
 
 
@@ -340,7 +324,7 @@ def graphic_6(datetimeObj_1, datetimeObj_2):
     trace1 = go.Bar(x=x, y=y)
 
     data=go.Data([trace1])
-    layout=go.Layout(title="Тривалість режимів сонячної активності", xaxis={'title':'ETRN (Вт/м^2)'}, yaxis=dict(title='t, год'))
+    layout=go.Layout(title="Тривалість режимів сонячної активності", xaxis={'title':'Вт/м2'}, yaxis=dict(title='t, год'))
     figure=go.Figure(data=data,layout=layout)
     #figure.update_yaxes(type="log", range=[0,80]) # log range: 10^0=1, 10^5=100000
     #figure.update_xaxes() # linear range
