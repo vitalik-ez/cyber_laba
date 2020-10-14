@@ -6,6 +6,7 @@ from django.views.generic import TemplateView
 from django.views import View
 
 from .import plots
+from .import laba2cal
 
 import plotly.graph_objs as go
 from plotly.offline import plot
@@ -16,6 +17,8 @@ import sqlite3
 from collections import Counter
 
 from datetime import datetime 
+
+from .forms import Laba2Form
 
 
 def main_form(request):
@@ -29,8 +32,12 @@ class FormView(View):
 		content = [x.strip() for x in content]
 		if len(content) == 0:
 			return render(request, 'graphics.html', {})
-		datetimeObj_1 = datetime.strptime(content[-2], '%d/%m/%Y %H:%M')
-		datetimeObj_2 = datetime.strptime(content[-1], '%d/%m/%Y %H:%M')
+		
+		data1 = request.session['data_1']
+		data2 = request.session['data_2'] 
+
+		datetimeObj_1 = datetime.strptime(data1, '%d/%m/%Y %H:%M')
+		datetimeObj_2 = datetime.strptime(data2, '%d/%m/%Y %H:%M')
 		
 		list_dict = plots.dataSampling(datetimeObj_1, datetimeObj_2)
 		graphic_1 = plots.graphic_1(list_dict, content[-2], content[-1])
@@ -49,29 +56,115 @@ class FormView(View):
 		return render(request, 'graphics.html', context)
 
 	def post(self, request):
-		 
-		datetimeObj_1 = datetime.strptime(request.POST.get('date_1'), '%d/%m/%Y %H:%M')
-		datetimeObj_2 = datetime.strptime(request.POST.get('date_2'), '%d/%m/%Y %H:%M')
-		with open('date.txt', 'a') as the_file:
-			the_file.write(request.POST.get('date_1')+'\n')
-			the_file.write(request.POST.get('date_2')+'\n')
-		list_dict = plots.dataSampling(datetimeObj_1, datetimeObj_2)
-		graphic_1 = plots.graphic_1(list_dict, request.POST.get('date_1'), request.POST.get('date_2'))
-		graphic_2, x, y = plots.graphic_2(list_dict)
-		graphic_3 = plots.graphic_3(list_dict)
-		graphic_4 = plots.graphic_4(list_dict)
+		if 'laba1' in request.POST:
+			datetimeObj_1 = datetime.strptime(request.POST.get('date_1'), '%d/%m/%Y %H:%M')
+			datetimeObj_2 = datetime.strptime(request.POST.get('date_2'), '%d/%m/%Y %H:%M')
+			with open('date.txt', 'a') as the_file:
+				the_file.write(request.POST.get('date_1')+'\n')
+				the_file.write(request.POST.get('date_2')+'\n')
 
-		graphic_5 = plots.graphic_5(datetimeObj_1, datetimeObj_2)
-		graphic_6 = plots.graphic_6(datetimeObj_1, datetimeObj_2)
+			request.session['data_1'] = request.POST.get('date_1')
+			request.session['data_2'] = request.POST.get('date_2')
+			list_dict = plots.dataSampling(datetimeObj_1, datetimeObj_2)
+			graphic_1 = plots.graphic_1(list_dict, request.POST.get('date_1'), request.POST.get('date_2'))
+			graphic_2, x, y = plots.graphic_2(list_dict)
+			graphic_3 = plots.graphic_3(list_dict)
+			graphic_4 = plots.graphic_4(list_dict)
 
-		z = [ (i,j) for i,j in zip(x,y)]
+			graphic_5 = plots.graphic_5(datetimeObj_1, datetimeObj_2)
+			graphic_6 = plots.graphic_6(datetimeObj_1, datetimeObj_2)
 
-		context = {'data1': request.POST.get('date_1'), 'data2': request.POST.get('date_2'), 'graphic_1': graphic_1,
-		'graphic_2': graphic_2,'graphic_3': graphic_3,'graphic_4': graphic_4, 'graphic_5': graphic_5,
-		 'graphic_6': graphic_6, 'z':z}
-		return render(request, 'graphics.html', context)
+			z = [ (i,j) for i,j in zip(x,y)]
+
+			context = {'data1': request.POST.get('date_1'), 'data2': request.POST.get('date_2'), 'graphic_1': graphic_1,
+			'graphic_2': graphic_2,'graphic_3': graphic_3,'graphic_4': graphic_4, 'graphic_5': graphic_5,
+			 'graphic_6': graphic_6, 'z':z}
+			return render(request, 'graphics.html', context)
+		else:
+			with open('date.txt', 'a') as the_file:
+				the_file.write(request.POST.get('date_1')+'\n')
+				the_file.write(request.POST.get('date_2')+'\n')
+			return redirect('/laba/laba2')
+
+class FormView2(View):
+
+	def get(self, request):
+		with open('date.txt') as f:
+			content = f.readlines()
+		content = [x.strip() for x in content]
+		if len(content) == 0:
+			return render(request, 'laba2.html', {})
+
+		with open('laba2.txt') as f:
+			content_laba2 = f.readlines()
+		content_laba2 = [x.strip() for x in content_laba2]
+		if len(content_laba2) == 0:
+			laba2Form = Laba2Form()
+			context = {'data1': content[-2], 'data2': content[-1], 'form': laba2Form}
+			return render(request, 'laba2.html', context)
+		else:
+			print("POST Перейти по вкладці зчитати введені раніше дані і відобразити")
+			context = {'data_1': content[-2], 'data_2': content[-1], 'content_laba2': content_laba2}
+			return render(request, 'laba2calculation.html', context)
 
 
+	def post(self, request):
+		writeToFileLaba2(request)
+		with open('date.txt') as f:
+			content = f.readlines()
+		content = [x.strip() for x in content]
+		datetimeObj_1 = datetime.strptime(content[-2], '%d/%m/%Y %H:%M')
+		datetimeObj_2 = datetime.strptime(content[-1], '%d/%m/%Y %H:%M')
+
+		list_dict = laba2cal.dataForLaba2(datetimeObj_1, datetimeObj_2)
+		
+		graphic = laba2cal.graphic(float(request.POST.get('heat_lost')), float(request.POST.get('house_area')), float(request.POST.get('air_temperature')))
+		energy_loss = laba2cal.getEnergyLoss(list_dict, float(request.POST.get('heat_lost')), float(request.POST.get('house_area')), float(request.POST.get('air_temperature')))
+
+		gvp = laba2cal.GVP(request)
+		tariff = 1600.44 * 8.598/1000
+		tariff_gas = 2975
+		tariff_coal = 2746.75
+		tariff_briquettes = 4832.64
+		tariff_oak = 948.75
+		tariff_electricity = 0.525
+		tariffs = [tariff, tariff_gas, tariff_coal, tariff_briquettes, tariff_oak, tariff_electricity]
+		histogram = laba2cal.histogram(gvp[1], energy_loss, tariff, tariff_gas, tariff_coal, tariff_briquettes, tariff_oak, tariff_electricity)
+
+		context = {'graphic': graphic, 'energy_loss': energy_loss, 'data_1': content[-2], 'data_2': content[-1],
+					'gvp':gvp[0], 'histogram':histogram, 'tariff':tariff, 'tariffs': tariffs}
+		return render(request, 'laba2calculation.html', context)
+
+
+
+
+def writeToFileLaba2(request):
+	f = open('laba2.txt', 'w+')
+	f.seek(0)
+	f.close()
+	with open('laba2.txt', 'a') as the_file:
+		the_file.write(request.POST.get('heat_lost')+'\n')
+		the_file.write(request.POST.get('house_area')+'\n')
+		the_file.write(request.POST.get('number_people')+'\n')
+		the_file.write(request.POST.get('incoming_temperature')+'\n')
+		the_file.write(request.POST.get('end_temperature')+'\n')
+		the_file.write(request.POST.get('shower_temperature')+'\n')
+		the_file.write(request.POST.get('count_shower')+'\n')
+		the_file.write(request.POST.get('bath_temperature')+'\n')
+		the_file.write(request.POST.get('count_bath')+'\n')
+		the_file.write(request.POST.get('air_temperature')+'\n')
+		if request.POST.get('duration') != None:
+			the_file.write('duration'+'\n')
+			the_file.write(request.POST.get('duration')+'\n')
+		else:
+			the_file.write('power'+'\n')
+			the_file.write(request.POST.get('power')+'\n')
+
+def clear_file(request):
+	f = open('laba2.txt', 'w+')
+	f.seek(0)
+	f.close()
+	return HttpResponseRedirect('/laba/laba2')
 
 def check_bd(request):
 	conn = sqlite3.connect("main.db")

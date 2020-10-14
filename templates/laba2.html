@@ -1,0 +1,139 @@
+{% extends "dashboard.html" %}
+{% load static %}
+    {% block head %}
+    {{ block.super }}
+    <title>Введення даних для другої лаби</title>
+  
+    <!--<link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">-->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
+
+
+    <link rel="stylesheet" href="{% static 'css/style_new.css' %}">
+    {% endblock %}
+  {% block content %}
+    
+    <div class="container" id="gray_block" style="height: 1200px;">
+      <h1 align="center">Введення даних для ПР №2</h1>
+      {% if data1 %}
+      <p class="lead">Діапазон введенних дат: {{ data1 }} - {{ data2 }} </p>
+      <p></p>
+      <form action="{% url 'laba2' %}" method="post">
+        {% csrf_token %}
+        <div class="form-row">
+          {% for i in form %}
+            <div class="form-group col-6">
+              <label for="inputEmail4">{{ i.label }}:</label>
+              {{ i }}
+            </div>
+            {% endfor %}
+          </div>
+          <br><p>Оберіть один із варіантів розрахунку:</p>
+          <input type="radio" name="r" id="radio1" checked="checked" onclick="enableTxtBox1()">
+          <label>Задаємо тривалість нагріву ємності і розраховуємо  потужність нагрівача:</label><br>
+          <input name="duration" class="form-control col-3" type='number' id="text1" required>
+          <br><input type="radio" name="r" id="radio2" onclick="enableTxtBox1()">
+          <label>Задаємо потужність нагрівача (для стандартного електробойлера) і розраховуємо  тривалість нагріву ємності:</label><br>
+          <input name="power" step="0.01" class="form-control col-3" type='number' min='0' max="999" id="text2" disabled="disabled" required><br><br>
+          <div style="text-align: center;">
+            <input type="submit" class="btn btn-primary pull-right" value="Провести розрахунки">
+          </div>
+      </form>
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.2.3/jquery.min.js"></script>
+      <button id="showHideContent" class="btn btn-primary">Показати/Сховати поля введення тарифів</button>
+
+      <div id="content" style="display:none;">
+        <p>Введення тарифів</p>
+      </div>
+    <script type="text/javascript">
+      $(document).ready(function(){
+          $("#showHideContent").click(function () {
+              if ($("#content").is(":hidden")) {
+                  $("#content").show("slow");
+              } else {
+                  $("#content").hide("slow");
+              }
+              return false;
+          });
+      });
+    </script>
+      <!--<form action="{% url 'laba2' %}" method="post">
+        {% csrf_token %}
+        {{ form }}
+        <br><p>Оберіть один із варіантів розрахунку:</p>
+        <input type="radio" name="r" id="radio1" checked="checked" onclick="enableTxtBox1()">
+        <label>Задаємо тривалість нагріву ємності і розраховуємо  потужність нагрівача:</label><br>
+        <input name="duration" class="form-control col-3" type='number' id="text1" required>
+        <br><input type="radio" name="r" id="radio2" onclick="enableTxtBox1()">
+        <label>Задаємо потужність нагрівача (для стандартного електробойлера) і розраховуємо  тривалість нагріву ємності:</label><br>
+        <input name="power" step="0.01" class="form-control col-3" type='number' min='0' max="999" id="text2" disabled="disabled" required><br><br>
+        <div style="text-align: center;">
+          <input type="submit" class="btn btn-primary pull-right" value="Провести розрахунки">
+        </div>
+      </form>-->
+      
+      <script>
+        function enableTxtBox1()
+        {
+            document.getElementById("text1").disabled = !document.getElementById("radio1").checked;
+            document.getElementById("text2").disabled = document.getElementById("radio1").checked;
+        }
+
+        function enableTxtBox()
+        {
+            if (document.getElementById("radio1").checked)
+            {
+                document.getElementById("text1").disabled = false;
+                document.getElementById("text2").disabled = true;
+            }
+            else if (document.getElementById("radio2").checked)
+            {
+                document.getElementById("text1").disabled = true;
+                document.getElementById("text2").disabled = false;
+                document.getElementById("text3").disabled = false;
+                document.getElementById("text4").disabled = false;
+            }
+        }
+    </script>
+
+      <div class="d-flex justify-content-between container" id="top_button">
+        <a class="btn btn-primary pull-right" style="text-align: right; visibility: hidden;" >Назад</a>
+         <a href="{% url 'laba' %}"><button type="submit" class="btn btn-primary pull-right" id="top_button" style="height: 40px; width: 80px;font-size: 18px;margin-bottom: 40px;">Назад</button></a>
+      </div> 
+      <div style="height: 60px;"></div>
+      <div class="col-2"></div>
+      {% else %}
+      <p class="lead">Спочатку введіть дані на вкладці Введення даних</p>
+      <p></p>
+      {% endif %}
+      
+      <p>&ensp;</p>
+
+
+
+    </div>
+
+{% endblock %}
+
+
+<!--<div class="form-row">
+          <div class="form-group col-6">
+            <label for="inputEmail4">{{ form.heat_lost.label }}</label>
+            {{ form.heat_lost }}
+          </div>
+          <div class="form-group col-6">
+            <label for="inputPassword4">{{ form.house_area.label }}</label>
+            {{ form.house_area }}
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group col-6">
+            <label for="inputEmail4">{{ form.number_people.label }}</label>
+            {{ form.number_people }}
+          </div>
+          <div class="form-group col-6">
+            <label for="inputPassword4">{{ form.incoming_temperature.label }}</label>
+            {{ form.incoming_temperature }}
+          </div>
+        </div>-->

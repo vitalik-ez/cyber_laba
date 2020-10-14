@@ -1,0 +1,50 @@
+{% extends "dashboard.html" %}
+{% load static %}
+    {% block head %}
+    {{ block.super }}
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <!--<link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">-->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
+
+
+    <link rel="stylesheet" href="{% static 'css/style_new.css' %}">
+    {% endblock %}
+  {% block content %}
+    
+    <div class="container" id="gray_block" style="height: 1350px;">
+      <h1 align="center">Практична робота №2</h1>
+
+      {% if heat_lost %}
+      <div>
+        <p>Питомі тепловтрати будівлі (Вт/м²)asdasdasdasdasd {{ heat_lost }}</p>
+      </div>
+      {% endif %}
+      {{ content_laba2 }}
+
+        <br><h6>{{ gvp }}</h6><br>
+        <div class="row" style="margin-bottom: 50px;">
+            <div class="col-md-12" style="display: flex;align-items: center; justify-content: center;">{{ graphic|safe }}</div>
+        </div>
+        <h6>Витрати енергії на опалення W = {{ energy_loss }} (кВтˑгод) за період {{ data_1 }} - {{ data_2 }}</h6>
+        <div class="row" style="margin-bottom: 50px;">
+            <div class="col-md-12">{{ histogram|safe }}</div>
+        </div>
+        <h6>Тариф на теплову енергію: {{ tariffs.0 }}</h6>
+        <h6>Вартість 1 м³ газу: {{ tariffs.1 }}</h6>
+        <h6>Вартість 1 т вугілля: {{ tariffs.2 }}</h6>
+        <h6>Вартість 1 т дров: {{ tariffs.4 }}</h6>
+        <h6>Вартість 1 т пелет: {{ tariffs.3 }}</h6>
+        <h6>Тариф на електричну енергію: {{ tariffs.5 }}</h6>
+
+
+
+
+    </div>
+<div class="d-flex justify-content-between container" id="top_button">
+    <a class="btn btn-primary pull-right" style="text-align: right; visibility: hidden;" >Назад</a>
+     <a href="{% url 'clear_file' %}"><button type="submit" class="btn btn-primary pull-right" id="top_button" style="height: 40px; width: 80px;font-size: 18px;margin-bottom: 40px;">Назад</button></a>
+  </div> 
+  <div style="height: 60px;"></div>
+{% endblock %}

@@ -355,3 +355,5 @@ def graphic_6(datetimeObj_1, datetimeObj_2):
     return plot_div
 
 
+
+
