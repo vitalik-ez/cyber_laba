@@ -14,7 +14,7 @@
     {% endblock %}
   {% block content %}
     
-    <div class="container" id="gray_block" style="height: 1200px;">
+    <div class="container" id="gray_block" style="height: 1300px;">
       <h1 align="center">Введення даних для ПР №2</h1>
       {% if data1 %}
       <p class="lead">Діапазон введенних дат: {{ data1 }} - {{ data2 }} </p>
@@ -32,32 +32,49 @@
           <br><p>Оберіть один із варіантів розрахунку:</p>
           <input type="radio" name="r" id="radio1" checked="checked" onclick="enableTxtBox1()">
           <label>Задаємо тривалість нагріву ємності і розраховуємо  потужність нагрівача:</label><br>
-          <input name="duration" class="form-control col-3" type='number' id="text1" required>
+          <input name="duration" step="0.01" value=3 min='0' max="999" class="form-control col-3" type='number' id="text1" required>
           <br><input type="radio" name="r" id="radio2" onclick="enableTxtBox1()">
           <label>Задаємо потужність нагрівача (для стандартного електробойлера) і розраховуємо  тривалість нагріву ємності:</label><br>
-          <input name="power" step="0.01" class="form-control col-3" type='number' min='0' max="999" id="text2" disabled="disabled" required><br><br>
+          <input name="power" step="0.01" value=2 class="form-control col-3" type='number' min='0' max="999" id="text2" disabled="disabled" required><br><br>
+
           <div style="text-align: center;">
             <input type="submit" class="btn btn-primary pull-right" value="Провести розрахунки">
           </div>
-      </form>
-      <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.2.3/jquery.min.js"></script>
-      <button id="showHideContent" class="btn btn-primary">Показати/Сховати поля введення тарифів</button>
 
-      <div id="content" style="display:none;">
-        <p>Введення тарифів</p>
-      </div>
-    <script type="text/javascript">
-      $(document).ready(function(){
-          $("#showHideContent").click(function () {
-              if ($("#content").is(":hidden")) {
-                  $("#content").show("slow");
-              } else {
-                  $("#content").hide("slow");
-              }
-              return false;
-          });
-      });
-    </script>
+          <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.2.3/jquery.min.js"></script>
+            <button id="showHideContent" class="btn btn-primary">Показати/Сховати тарифи та вартість палива</button>
+
+            <div id="content" style="display:none;">
+              <br>
+              <div class="form" style="height:300px;">
+                <label>Тариф на теплову енергію: </label>
+                <input name="tariff" step="0.01" class="form-group col-2" type='number' min='0' value=1.38 required><br>
+                <label>Вартість 1 м³ газу: </label>
+                <input name="tariff_gas" step="0.01" class="form-group col-2" type='number' min='0' value=2975 required><br>
+                <label>Вартість 1 т вугілля: </label>
+                <input name="tariff_coal" step="0.01" class="form-group col-2" type='number' min='0' value=2746.75 required><br>
+                <label>Вартість 1 т дров: </label>
+                <input name="tariff_oak" step="0.01" class="form-group col-2" type='number' min='0' value=948.75 required><br>
+                <label>Вартість 1 т пелет: </label>
+                <input name="tariff_briquettes" step="0.01" class="form-group col-2" type='number' min='0' value=4832.64 required><br>
+                <label>Тариф на електричну енергію: </label>
+                <input name="tariff_electricity" step="0.01" class="form-group col-2" type='number' min='0' value=0.98 required><br>
+              </div>
+            </div>
+          <script type="text/javascript">
+            $(document).ready(function(){
+                $("#showHideContent").click(function () {
+                    if ($("#content").is(":hidden")) {
+                        $("#content").show("slow");
+                    } else {
+                        $("#content").hide("slow");
+                    }
+                    return false;
+                });
+            });
+          </script>
+      </form>
+      
       <!--<form action="{% url 'laba2' %}" method="post">
         {% csrf_token %}
         {{ form }}

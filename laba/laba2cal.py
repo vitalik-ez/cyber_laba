@@ -49,6 +49,7 @@ def dataForLaba2(datetimeObj_1, datetimeObj_2):
 
 
 def graphic(heat_lost, house_area, air_temperature):
+    heat_lost /= 1000 # Квт/м2
     t_external = -22
     # point_1 = (t_external, heat_lost*house_area)
     # point_2 = (air_temperature, 0)
@@ -73,7 +74,7 @@ def graphic(heat_lost, house_area, air_temperature):
 
     fig.update_layout(
         # autosize=False,
-        width=1000,
+        width=1100,
         # height=500,
         title="Характеристика потреб будівлі у тепловій енергії на опалення.",
         xaxis=dict(
@@ -83,17 +84,18 @@ def graphic(heat_lost, house_area, air_temperature):
             title="Q, кВт"
         )
     )
-
-    fig['data'][0]['showlegend']=True
-    fig['data'][0]['name']='Температура що ввів користувач t\u00b0C'
+    if air_temperature != 20:
+        fig['data'][0]['showlegend']=True
+        fig['data'][0]['name']='Температура повітря всередині будівлі ' + str(air_temperature) + '\u00b0C'
     fig['data'][1]['showlegend'] = True
-    fig['data'][1]['name'] = 'По замовчуванню 20 t\u00b0C'
+    fig['data'][1]['name'] = 'Температура повітря всередині будівлі 20\u00b0C'
 
     plot_div = plot(fig, output_type='div', include_plotlyjs=False)
     return plot_div
 
 
 def getEnergyLoss(list_dict, heat_lost, house_area, air_temperature):
+    heat_lost /= 1000 # кВт
     d = {}
     for i in list_dict:
         if i['T'] in d:
@@ -110,7 +112,6 @@ def getEnergyLoss(list_dict, heat_lost, house_area, air_temperature):
     sort_dict = {}
     for i in list_keys:
         sort_dict[i] = d[i]
-    print(sort_dict)
     t_external = -22
     k = (heat_lost * house_area - 0) / (t_external - air_temperature)
     b = 0 - k * air_temperature
@@ -124,22 +125,22 @@ def getEnergyLoss(list_dict, heat_lost, house_area, air_temperature):
                 t = t.seconds / 3600
             W += (k * i + b) * t
 
-    return W
+    return round(W,2)
 
 
 def GVP(request):
-    count_shower = int(request.POST.get('count_shower'))
-    shower_temperature = float(request.POST.get('shower_temperature'))
-    count_litters_shower = float(request.POST.get('count_litters_shower'))
-    shower_temperature = float(request.POST.get('shower_temperature'))
+    count_shower = int(request.session['count_shower'])
+    shower_temperature = float(request.session['shower_temperature'])
+    count_litters_shower = float(request.session['count_litters_shower'])
+    shower_temperature = float(request.session['shower_temperature'])
 
-    incoming_temperature = float(request.POST.get('incoming_temperature'))
-    end_temperature = float(request.POST.get('end_temperature'))
+    incoming_temperature = float(request.session['incoming_temperature'])
+    end_temperature = float(request.session['end_temperature'])
 
-    bath_temperature = float(request.POST.get('bath_temperature'))
-    count_bath = int(request.POST.get('count_bath'))
-    count_litters_bath = float(request.POST.get('count_litters_bath'))
-    bath_temperature = float(request.POST.get('bath_temperature'))
+    bath_temperature = float(request.session['bath_temperature'])
+    count_bath = int(request.session['count_bath'])
+    count_litters_bath = float(request.session['count_litters_bath'])
+    bath_temperature = float(request.session['bath_temperature'])
 
     q_shower = count_shower * count_litters_shower
     q_bath = count_bath * count_litters_bath
@@ -151,11 +152,11 @@ def GVP(request):
 
     W = 1.163 * q_t * (end_temperature - incoming_temperature)
 
-    if request.POST.get('duration') != None:
-        P = W / int(request.POST.get('duration'))
+    if 'duration' in request.session:
+        P = W / int(request.session['duration'])
         return ['Енергія необхідна для нагріву води ' + str(round(W, 3)) + ' кВт·год. Теплова потужність нагрівача: ' + str(round(P, 3)) + ' кВт.', W]
     else:
-        t = W / int(request.POST.get('power'))
+        t = W / int(request.session['power'])
         return ['Енергія необхідна для нагріву води ' + str(round(W, 3)) +' кВт·год. Час нагрівання бака ГВП: ' + str(round(t, 3)) + ' год.', W]
 
 
@@ -163,35 +164,62 @@ def histogram(W, energy_loss, tariff, tariff_gas, tariff_coal, tariff_briquettes
     #W_tariff = tariff * W
     energy_loss_tariff = tariff * energy_loss
     
-    gas = 0.1075 * energy_loss * tariff_gas
-    coal = 0.1792 * energy_loss * tariff_coal
-    briquettes = 0.1953 * energy_loss * tariff_briquettes
-    oak = 0.287 * energy_loss * tariff_oak
+    gas = 0.1075 * energy_loss * tariff_gas / 1000
+    coal = 0.1792 * energy_loss * tariff_coal / 1000
+    briquettes = 0.1953 * energy_loss * tariff_briquettes / 1000
+    oak = 0.287 * energy_loss * tariff_oak / 1000
     electricity = 1.01 * energy_loss * tariff_electricity
 
 
-    x = ["Теплозабезпечення від централізованої мережі",
-         "Автономне теплозабезпечення від газового котла",
-         "Автономне теплозабезпечення від вугільного котла",
-         "Автономне теплозабезпечення від дров’яного котла", 
-         "Автономне теплозабезпечення від котла, що працює на деревних пелетах",
-         "Автономне теплозабезпечення від електричного котла"]
+    #x = ["Теплозабезпечення від централізованої мережі",
+    #     "Автономне теплозабезпечення від газового котла",
+    #     "Автономне теплозабезпечення від вугільного котла",
+    #     "Автономне теплозабезпечення від дров’яного котла", 
+    #     "Автономне теплозабезпечення від котла, що працює на деревних пелетах",
+    #     "Автономне теплозабезпечення від електричного котла"]
+    x = ["Централізована мережа",
+         "Газовий котел",
+         "Вугільний котел",
+         "Дров’яний котел", 
+         "Котел, що працює на деревних пелетах",
+         "Електричний котел"]
     
-    y = [energy_loss_tariff,gas,coal,oak, briquettes,electricity]
-
+    y = [round(energy_loss_tariff,2),round(gas,2),round(coal,2),round(oak,2), round(briquettes,2), round(electricity,2)]
+    y_1 = [16499,25200,25120,23990,24650,25190]
     data = [go.Bar(
        x = x,
        y = y
     )]
     layout=go.Layout(title="Експлуатаційні витрати на опалення для різних варіантів реалізації системи теплозабезпечення ", xaxis={'title':'Види систем теплозабезпечення'}, yaxis={'title':'Витрати (грн)'})
+    
     fig = go.Figure(data=data, layout=layout)
-
+    #fig.add_trace(go.Bar(x=x, y=y_1))
     #fig['data'][0]['showlegend']=True
-    #fig['data'][0]['name']='Температура що ввів користувач t\u00b0C'
+    #fig['data'][0]['name']='Експлуатаційні витрати'
     #fig['data'][1]['showlegend'] = True
-    #fig['data'][1]['name'] = 'По замовчуванню 20 t\u00b0C'
+    #fig['data'][1]['name'] = 'Вартість котлів'
 
     
 
+    plot_div = plot(fig, output_type='div', include_plotlyjs=False)
+    return plot_div
+
+
+def histogram_price():
+    x = ["Газовий котел(BOSCH WBN2000-24C)",
+         "Твердопаливний котел (Kraft 25 кВт)",
+         "Електричний котел(BOSCH HEAT 3500 24 кВт)"]
+
+    y = [16499,25200,25190]
+    data = [go.Bar(
+       x = x,
+       y = y
+    )]
+    layout=go.Layout(title="Вартість котлів", xaxis={'title':'Вид системи теплозабезпечення'}, yaxis={'title':'Вартість (грн)'})
+    
+    fig = go.Figure(data=data, layout=layout)
+    fig['data'][0]['showlegend']=True
+    fig['data'][0]['name']='Вартість котлів'
+    
     plot_div = plot(fig, output_type='div', include_plotlyjs=False)
     return plot_div

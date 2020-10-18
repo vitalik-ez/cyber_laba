@@ -27,20 +27,18 @@ def main_form(request):
 class FormView(View):
 
 	def get(self, request):
-		with open('date.txt') as f:
-			content = f.readlines()
-		content = [x.strip() for x in content]
-		if len(content) == 0:
-			return render(request, 'graphics.html', {})
 		
 		data1 = request.session['data_1']
-		data2 = request.session['data_2'] 
+		data2 = request.session['data_2']
+
+		if data1 == None:
+			return render(request, 'graphics.html', {}) 
 
 		datetimeObj_1 = datetime.strptime(data1, '%d/%m/%Y %H:%M')
 		datetimeObj_2 = datetime.strptime(data2, '%d/%m/%Y %H:%M')
 		
 		list_dict = plots.dataSampling(datetimeObj_1, datetimeObj_2)
-		graphic_1 = plots.graphic_1(list_dict, content[-2], content[-1])
+		graphic_1 = plots.graphic_1(list_dict, data1, data2)
 		graphic_2, x, y = plots.graphic_2(list_dict)
 		graphic_3 = plots.graphic_3(list_dict)
 		graphic_4 = plots.graphic_4(list_dict)
@@ -50,7 +48,7 @@ class FormView(View):
 
 		z = [ (i,j) for i,j in zip(x,y)]
 
-		context = {'data1': content[-2], 'data2': content[-1], 'graphic_1': graphic_1,
+		context = {'data1': data1, 'data2': data2, 'graphic_1': graphic_1,
 		'graphic_2': graphic_2,'graphic_3': graphic_3,'graphic_4': graphic_4, 'graphic_5': graphic_5,
 		 'graphic_6': graphic_6, 'z':z}
 		return render(request, 'graphics.html', context)
@@ -59,12 +57,10 @@ class FormView(View):
 		if 'laba1' in request.POST:
 			datetimeObj_1 = datetime.strptime(request.POST.get('date_1'), '%d/%m/%Y %H:%M')
 			datetimeObj_2 = datetime.strptime(request.POST.get('date_2'), '%d/%m/%Y %H:%M')
-			with open('date.txt', 'a') as the_file:
-				the_file.write(request.POST.get('date_1')+'\n')
-				the_file.write(request.POST.get('date_2')+'\n')
-
+			
 			request.session['data_1'] = request.POST.get('date_1')
 			request.session['data_2'] = request.POST.get('date_2')
+
 			list_dict = plots.dataSampling(datetimeObj_1, datetimeObj_2)
 			graphic_1 = plots.graphic_1(list_dict, request.POST.get('date_1'), request.POST.get('date_2'))
 			graphic_2, x, y = plots.graphic_2(list_dict)
@@ -81,40 +77,56 @@ class FormView(View):
 			 'graphic_6': graphic_6, 'z':z}
 			return render(request, 'graphics.html', context)
 		else:
-			with open('date.txt', 'a') as the_file:
-				the_file.write(request.POST.get('date_1')+'\n')
-				the_file.write(request.POST.get('date_2')+'\n')
+			request.session['data_1'] = request.POST.get('date_1')
+			request.session['data_2'] = request.POST.get('date_2')
 			return redirect('/laba/laba2')
 
 class FormView2(View):
 
 	def get(self, request):
-		with open('date.txt') as f:
-			content = f.readlines()
-		content = [x.strip() for x in content]
-		if len(content) == 0:
-			return render(request, 'laba2.html', {})
 
-		with open('laba2.txt') as f:
-			content_laba2 = f.readlines()
-		content_laba2 = [x.strip() for x in content_laba2]
-		if len(content_laba2) == 0:
+		data1 = request.session['data_1']
+		data2 = request.session['data_2']
+
+		if data1 == None:
+			return render(request, 'laba2.html', {}) 
+
+		if 'heat_lost' not in request.session:
 			laba2Form = Laba2Form()
-			context = {'data1': content[-2], 'data2': content[-1], 'form': laba2Form}
+			context = {'data1': data1, 'data2':data2, 'form': laba2Form}
 			return render(request, 'laba2.html', context)
 		else:
 			print("POST Перейти по вкладці зчитати введені раніше дані і відобразити")
-			context = {'data_1': content[-2], 'data_2': content[-1], 'content_laba2': content_laba2}
+			datetimeObj_1 = datetime.strptime(data1, '%d/%m/%Y %H:%M')
+			datetimeObj_2 = datetime.strptime(data2, '%d/%m/%Y %H:%M')
+
+			list_dict = laba2cal.dataForLaba2(datetimeObj_1, datetimeObj_2)
+			
+			graphic = laba2cal.graphic(float(request.session['heat_lost']), float(request.session['house_area']), float(request.session['air_temperature']))
+			energy_loss = laba2cal.getEnergyLoss(list_dict, float(request.session['heat_lost']), float(request.session['house_area']), float(request.session['air_temperature']))
+
+			gvp = laba2cal.GVP(request)
+			tariff = float(request.session['tariff'])
+			tariff_gas = float(request.session['tariff_gas'])
+			tariff_coal = float(request.session['tariff_coal'])
+			tariff_briquettes = float(request.session['tariff_briquettes'])
+			tariff_oak = float(request.session['tariff_oak'])
+			tariff_electricity = float(request.session['tariff_electricity'])
+			tariffs = [tariff, tariff_gas, tariff_coal, tariff_briquettes, tariff_oak, tariff_electricity]
+			histogram = laba2cal.histogram(gvp[1], energy_loss, tariff, tariff_gas, tariff_coal, tariff_briquettes, tariff_oak, tariff_electricity)
+
+			context = {'graphic': graphic, 'energy_loss': energy_loss, 'data_1': data1, 'data_2': data2,
+						'gvp':gvp[0], 'histogram':histogram, 'tariff':tariff, 'tariffs': tariffs, 'histogram_price': laba2cal.histogram_price()}
 			return render(request, 'laba2calculation.html', context)
 
 
 	def post(self, request):
-		writeToFileLaba2(request)
-		with open('date.txt') as f:
-			content = f.readlines()
-		content = [x.strip() for x in content]
-		datetimeObj_1 = datetime.strptime(content[-2], '%d/%m/%Y %H:%M')
-		datetimeObj_2 = datetime.strptime(content[-1], '%d/%m/%Y %H:%M')
+		writeToSessionLaba2(request)
+		data1 = request.session['data_1']
+		data2 = request.session['data_2']
+
+		datetimeObj_1 = datetime.strptime(data1, '%d/%m/%Y %H:%M')
+		datetimeObj_2 = datetime.strptime(data2, '%d/%m/%Y %H:%M')
 
 		list_dict = laba2cal.dataForLaba2(datetimeObj_1, datetimeObj_2)
 		
@@ -122,48 +134,52 @@ class FormView2(View):
 		energy_loss = laba2cal.getEnergyLoss(list_dict, float(request.POST.get('heat_lost')), float(request.POST.get('house_area')), float(request.POST.get('air_temperature')))
 
 		gvp = laba2cal.GVP(request)
-		tariff = 1600.44 * 8.598/1000
-		tariff_gas = 2975
-		tariff_coal = 2746.75
-		tariff_briquettes = 4832.64
-		tariff_oak = 948.75
-		tariff_electricity = 0.525
+		tariff = float(request.session['tariff'])
+		tariff_gas = float(request.session['tariff_gas'])
+		tariff_coal = float(request.session['tariff_coal'])
+		tariff_briquettes = float(request.session['tariff_briquettes'])
+		tariff_oak = float(request.session['tariff_oak'])
+		tariff_electricity = float(request.session['tariff_electricity'])
 		tariffs = [tariff, tariff_gas, tariff_coal, tariff_briquettes, tariff_oak, tariff_electricity]
 		histogram = laba2cal.histogram(gvp[1], energy_loss, tariff, tariff_gas, tariff_coal, tariff_briquettes, tariff_oak, tariff_electricity)
 
-		context = {'graphic': graphic, 'energy_loss': energy_loss, 'data_1': content[-2], 'data_2': content[-1],
-					'gvp':gvp[0], 'histogram':histogram, 'tariff':tariff, 'tariffs': tariffs}
+		context = {'graphic': graphic, 'energy_loss': energy_loss, 'data_1': data1, 'data_2': data2,
+					'gvp':gvp[0], 'histogram':histogram, 'tariff':tariff, 'tariffs': tariffs, 'histogram_price': laba2cal.histogram_price()}
 		return render(request, 'laba2calculation.html', context)
 
 
 
+def writeToSessionLaba2(request):
+	request.session['heat_lost'] = request.POST.get('heat_lost')
+	request.session['house_area'] = request.POST.get('house_area')
+	request.session['number_people'] = request.POST.get('number_people')
+	request.session['incoming_temperature'] = request.POST.get('incoming_temperature')
+	request.session['end_temperature'] = request.POST.get('end_temperature')
+	request.session['shower_temperature'] = request.POST.get('shower_temperature')
+	request.session['count_shower'] = request.POST.get('count_shower')
+	request.session['bath_temperature'] = request.POST.get('bath_temperature')
+	request.session['count_bath'] = request.POST.get('count_bath')
+	request.session['air_temperature'] = request.POST.get('air_temperature')
+	request.session['count_litters_shower'] = request.POST.get('count_litters_shower')
+	request.session['count_litters_bath'] = request.POST.get('count_litters_bath')
+	if request.POST.get('duration') != None:
+		request.session['duration'] = request.POST.get('duration')
+	else:
+		request.session['power'] = request.POST.get('power')
 
-def writeToFileLaba2(request):
-	f = open('laba2.txt', 'w+')
-	f.seek(0)
-	f.close()
-	with open('laba2.txt', 'a') as the_file:
-		the_file.write(request.POST.get('heat_lost')+'\n')
-		the_file.write(request.POST.get('house_area')+'\n')
-		the_file.write(request.POST.get('number_people')+'\n')
-		the_file.write(request.POST.get('incoming_temperature')+'\n')
-		the_file.write(request.POST.get('end_temperature')+'\n')
-		the_file.write(request.POST.get('shower_temperature')+'\n')
-		the_file.write(request.POST.get('count_shower')+'\n')
-		the_file.write(request.POST.get('bath_temperature')+'\n')
-		the_file.write(request.POST.get('count_bath')+'\n')
-		the_file.write(request.POST.get('air_temperature')+'\n')
-		if request.POST.get('duration') != None:
-			the_file.write('duration'+'\n')
-			the_file.write(request.POST.get('duration')+'\n')
-		else:
-			the_file.write('power'+'\n')
-			the_file.write(request.POST.get('power')+'\n')
+	request.session['tariff'] = request.POST.get('tariff')
+	request.session['tariff_gas'] = request.POST.get('tariff_gas')
+	request.session['tariff_coal'] = request.POST.get('tariff_coal')
+	request.session['tariff_briquettes'] = request.POST.get('tariff_briquettes')
+	request.session['tariff_oak'] = request.POST.get('tariff_oak')
+	request.session['tariff_electricity'] = request.POST.get('tariff_electricity')
 
-def clear_file(request):
-	f = open('laba2.txt', 'w+')
-	f.seek(0)
-	f.close()
+def clear_session(request):
+	del request.session['heat_lost']
+	if 'duration' in request.session:
+		del request.session['duration']
+	if 'power' in request.session:
+		del request.session['power']
 	return HttpResponseRedirect('/laba/laba2')
 
 def check_bd(request):
@@ -304,3 +320,46 @@ def сheck_error(request):
 	return render(request, 'check_bd.html', errors)
 
 
+
+from django.shortcuts import render
+from io import BytesIO
+from django.http import HttpResponse
+from django.template.loader import get_template
+from django.views import View
+from xhtml2pdf import pisa
+
+def getpdfPageLaba2(request):
+	template = get_template('pdfLaba2.html')
+	html  = template.render(calculationLaba2(request))
+	result = BytesIO()
+	pdf = pisa.pisaDocument(BytesIO(html.encode("UTF-8")), result, encoding='UTF-8')
+	if not pdf.err:
+		return HttpResponse(result.getvalue(), content_type='application/pdf')
+	else:
+		return HttpResponse('ERROR GENERATING PDF')
+
+
+def calculationLaba2(request):
+	data1 = request.session['data_1']
+	data2 = request.session['data_2']
+
+	datetimeObj_1 = datetime.strptime(data1, '%d/%m/%Y %H:%M')
+	datetimeObj_2 = datetime.strptime(data2, '%d/%m/%Y %H:%M')
+
+	list_dict = laba2cal.dataForLaba2(datetimeObj_1, datetimeObj_2)
+	
+	graphic = laba2cal.graphic(float(request.session['heat_lost']), float(request.session['house_area']), float(request.session['air_temperature']))
+	energy_loss = laba2cal.getEnergyLoss(list_dict, float(request.session['heat_lost']), float(request.session['house_area']), float(request.session['air_temperature']))
+
+	gvp = laba2cal.GVP(request)
+	tariff = float(request.session['tariff'])
+	tariff_gas = float(request.session['tariff_gas'])
+	tariff_coal = float(request.session['tariff_coal'])
+	tariff_briquettes = float(request.session['tariff_briquettes'])
+	tariff_oak = float(request.session['tariff_oak'])
+	tariff_electricity = float(request.session['tariff_electricity'])
+	tariffs = [tariff, tariff_gas, tariff_coal, tariff_briquettes, tariff_oak, tariff_electricity]
+	histogram = laba2cal.histogram(gvp[1], energy_loss, tariff, tariff_gas, tariff_coal, tariff_briquettes, tariff_oak, tariff_electricity)
+
+	return {'graphic': graphic, 'energy_loss': energy_loss, 'data_1': data1, 'data_2': data2,
+				'gvp':gvp[0], 'histogram':histogram, 'tariff':tariff, 'tariffs': tariffs}

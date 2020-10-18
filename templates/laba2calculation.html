@@ -12,31 +12,35 @@
     <link rel="stylesheet" href="{% static 'css/style_new.css' %}">
     {% endblock %}
   {% block content %}
+
     
-    <div class="container" id="gray_block" style="height: 1350px;">
+    <div class="container" id="gray_block" style="height: 1950px;">
+      
       <h1 align="center">Практична робота №2</h1>
+      <p class="lead">Діапазон введенних дат: {{ data_1 }} - {{ data_2 }} </p>
 
-      {% if heat_lost %}
-      <div>
-        <p>Питомі тепловтрати будівлі (Вт/м²)asdasdasdasdasd {{ heat_lost }}</p>
-      </div>
-      {% endif %}
-      {{ content_laba2 }}
 
-        <br><h6>{{ gvp }}</h6><br>
+        <p>Витрати енергії на опалення W = {{ energy_loss }} (кВтˑгод) за період {{ data_1 }} - {{ data_2 }}</p>
+        <p>{{ gvp }}</p>
+        <p>Тариф на теплову енергію: {{ tariffs.0 }}</p>
+        <p>Вартість 1 м³ газу: {{ tariffs.1 }}</p>
+        <p>Вартість 1 т вугілля: {{ tariffs.2 }}</p>
+        <p>Вартість 1 т дров: {{ tariffs.4 }}</p>
+        <p>Вартість 1 т пелет: {{ tariffs.3 }}</p>
+        <p>Тариф на електричну енергію: {{ tariffs.5 }}</p>
+
+        
         <div class="row" style="margin-bottom: 50px;">
             <div class="col-md-12" style="display: flex;align-items: center; justify-content: center;">{{ graphic|safe }}</div>
         </div>
-        <h6>Витрати енергії на опалення W = {{ energy_loss }} (кВтˑгод) за період {{ data_1 }} - {{ data_2 }}</h6>
+        
         <div class="row" style="margin-bottom: 50px;">
             <div class="col-md-12">{{ histogram|safe }}</div>
         </div>
-        <h6>Тариф на теплову енергію: {{ tariffs.0 }}</h6>
-        <h6>Вартість 1 м³ газу: {{ tariffs.1 }}</h6>
-        <h6>Вартість 1 т вугілля: {{ tariffs.2 }}</h6>
-        <h6>Вартість 1 т дров: {{ tariffs.4 }}</h6>
-        <h6>Вартість 1 т пелет: {{ tariffs.3 }}</h6>
-        <h6>Тариф на електричну енергію: {{ tariffs.5 }}</h6>
+        
+        <div class="row" style="margin-bottom: 50px;">
+            <div class="col-md-12">{{ histogram_price|safe }}</div>
+        </div>
 
 
 
@@ -44,7 +48,7 @@
     </div>
 <div class="d-flex justify-content-between container" id="top_button">
     <a class="btn btn-primary pull-right" style="text-align: right; visibility: hidden;" >Назад</a>
-     <a href="{% url 'clear_file' %}"><button type="submit" class="btn btn-primary pull-right" id="top_button" style="height: 40px; width: 80px;font-size: 18px;margin-bottom: 40px;">Назад</button></a>
+     <a href="{% url 'clear_session' %}"><button type="submit" class="btn btn-primary pull-right" id="top_button" style="height: 40px; width: 80px;font-size: 18px;margin-bottom: 40px;">Назад</button></a>
   </div> 
   <div style="height: 60px;"></div>
 {% endblock %}

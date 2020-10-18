@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+ <head>
+  <meta charset="utf-8" />
+  <title>HTML5</title>
+  <style>
+    @font-face {
+     font-family: DejaMono; 
+     src: url({% static 'fonts/SansitaSwashed-Black.ttf' %});
+}
+div { font-family: SansitaSwashed-Black; }
+  </style>
+ </head>
+ <body>
+  <div>Єзгор</div>
+you can display that text in DejaMono font with this CSS rule:
+
+
+      <p class="lead">Date input range:{{ data_1 }} - {{ data_2 }} </p>
+        <br><h6>{{ gvp }}</h6><br>
+        <div class="row" style="margin-bottom: 50px;">
+            <div class="col-md-12" style="display: flex;align-items: center; justify-content: center;">{{ graphic|safe }}</div>
+        </div>
+        <h6>Витрати енергії на опалення W = {{ energy_loss }} (кВтˑгод) за період {{ data_1 }} - {{ data_2 }}</h6>
+        <div class="row" style="margin-bottom: 50px;">
+            <div class="col-md-12">{{ histogram|safe }}</div>
+        </div>
+        <p>Тариф на теплову енергію: {{ tariffs.0 }}</p>
+        <p>Вартість 1 м³ газу: {{ tariffs.1 }}</p>
+        <p>Вартість 1 т вугілля: {{ tariffs.2 }}</p>
+        <p>Вартість 1 т дров: {{ tariffs.4 }}</p>
+        <p>Вартість 1 т пелет: {{ tariffs.3 }}</p>
+        <p>Тариф на електричну енергію: {{ tariffs.5 }}</p>
+
+
+
+  </div>
+
+ </body>
+</html>

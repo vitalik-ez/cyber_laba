@@ -11,7 +11,7 @@ class DateForm(forms.Form):
 
 
 class Laba2Form(forms.Form):
-    heat_lost = forms.DecimalField(min_value=0, max_value=500, initial=0.2,label='Питомі тепловтрати будівлі (Вт/м²)',widget=forms.NumberInput(attrs={'class':'form-control col-3',}))
+    heat_lost = forms.DecimalField(min_value=0, max_value=500, initial=300,label='Питомі тепловтрати будівлі (Вт/м²)',widget=forms.NumberInput(attrs={'class':'form-control col-3',}))
     house_area = forms.DecimalField(min_value=0, max_value=2000, initial=80, label='Опалювальна площа будинку (м²) (квартири)',widget=forms.NumberInput(attrs={'class':'form-control col-3',}))
     number_people = forms.IntegerField(min_value=1, max_value=20, initial=4, label='Кількість людей', widget=forms.NumberInput(attrs={'class':'form-control col-3',}))
     incoming_temperature = forms.DecimalField(min_value=0, max_value=100, decimal_places=1, initial=15, label='Температура вхідної води Т (за вмовчуванням 15°C)', widget=forms.NumberInput(attrs={'class':'form-control col-3',}))
