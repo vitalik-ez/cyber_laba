@@ -48,7 +48,7 @@ def dataForLaba2(datetimeObj_1, datetimeObj_2):
 
 
 
-def graphic(heat_lost, house_area, air_temperature):
+def graphic(heat_lost, house_area, air_temperature, pdf = False):
     heat_lost /= 1000 # Квт/м2
     t_external = -22
     # point_1 = (t_external, heat_lost*house_area)
@@ -86,10 +86,11 @@ def graphic(heat_lost, house_area, air_temperature):
     )
     if air_temperature != 20:
         fig['data'][0]['showlegend']=True
-        fig['data'][0]['name']='Температура повітря всередині будівлі ' + str(air_temperature) + '\u00b0C'
+        fig['data'][0]['name']='Залежність тепловтрат від Т зовн при Т внутр = ' + str(air_temperature) + '\u00b0C'
     fig['data'][1]['showlegend'] = True
-    fig['data'][1]['name'] = 'Температура повітря всередині будівлі 20\u00b0C'
-
+    fig['data'][1]['name'] = 'Залежність тепловтрат від Т зовн при Т внутр = 20\u00b0C'
+    if pdf:
+        fig.write_image("report_images/fig0.png")
     plot_div = plot(fig, output_type='div', include_plotlyjs=False)
     return plot_div
 
@@ -160,7 +161,7 @@ def GVP(request):
         return ['Енергія необхідна для нагріву води ' + str(round(W, 3)) +' кВт·год. Час нагрівання бака ГВП: ' + str(round(t, 3)) + ' год.', W]
 
 
-def histogram(W, energy_loss, tariff, tariff_gas, tariff_coal, tariff_briquettes, tariff_oak, tariff_electricity):
+def histogram(W, energy_loss, tariff, tariff_gas, tariff_coal, tariff_briquettes, tariff_oak, tariff_electricity, pdf = False):
     #W_tariff = tariff * W
     energy_loss_tariff = tariff * energy_loss
     
@@ -190,22 +191,30 @@ def histogram(W, energy_loss, tariff, tariff_gas, tariff_coal, tariff_briquettes
        x = x,
        y = y
     )]
-    layout=go.Layout(title="Експлуатаційні витрати на опалення для різних варіантів реалізації системи теплозабезпечення ", xaxis={'title':'Види систем теплозабезпечення'}, yaxis={'title':'Витрати (грн)'})
-    
+    if pdf:
+        layout=go.Layout(title="Експлуатаційні витрати на опалення", xaxis={'title':'Види систем теплозабезпечення'}, yaxis={'title':'Витрати (грн)'})
+    else:
+        layout=go.Layout(title="Експлуатаційні витрати на опалення для різних варіантів реалізації системи теплозабезпечення", xaxis={'title':'Види систем теплозабезпечення'}, yaxis={'title':'Витрати (грн)'})
+        
     fig = go.Figure(data=data, layout=layout)
+    fig.update_layout(
+        font=dict(
+            size=12,
+        )
+    )
     #fig.add_trace(go.Bar(x=x, y=y_1))
     #fig['data'][0]['showlegend']=True
     #fig['data'][0]['name']='Експлуатаційні витрати'
     #fig['data'][1]['showlegend'] = True
     #fig['data'][1]['name'] = 'Вартість котлів'
 
-    
-
+    if pdf:
+        fig.write_image("report_images/fig1.png")
     plot_div = plot(fig, output_type='div', include_plotlyjs=False)
     return plot_div
 
 
-def histogram_price():
+def histogram_price(pdf = False):
     x = ["Газовий котел(BOSCH WBN2000-24C)",
          "Твердопаливний котел (Kraft 25 кВт)",
          "Електричний котел(BOSCH HEAT 3500 24 кВт)"]
@@ -220,6 +229,8 @@ def histogram_price():
     fig = go.Figure(data=data, layout=layout)
     fig['data'][0]['showlegend']=True
     fig['data'][0]['name']='Вартість котлів'
+    if pdf:
+        fig.write_image("report_images/fig2.png")
     
     plot_div = plot(fig, output_type='div', include_plotlyjs=False)
     return plot_div

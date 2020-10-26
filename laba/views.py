@@ -20,9 +20,10 @@ from datetime import datetime
 
 from .forms import Laba2Form
 
+import site1
 
 def main_form(request):
-	return render(request, 'date.html')
+	return render(request, 'date.html', {'media': site1.settings.MEDIA_ROOT})
 
 class FormView(View):
 
@@ -319,14 +320,14 @@ def сheck_error(request):
 		return render(request, 'check_bd.html', { 'error_t': error, 'error_day': error_day,'error_list': error_list, 'error_speed':error_speed, 'error_speed_list':error_speed_list})
 	return render(request, 'check_bd.html', errors)
 
-
-
 from django.shortcuts import render
 from io import BytesIO
 from django.http import HttpResponse
 from django.template.loader import get_template
 from django.views import View
 from xhtml2pdf import pisa
+
+
 
 def getpdfPageLaba2(request):
 	template = get_template('pdfLaba2.html')
@@ -348,7 +349,7 @@ def calculationLaba2(request):
 
 	list_dict = laba2cal.dataForLaba2(datetimeObj_1, datetimeObj_2)
 	
-	graphic = laba2cal.graphic(float(request.session['heat_lost']), float(request.session['house_area']), float(request.session['air_temperature']))
+	graphic = laba2cal.graphic(float(request.session['heat_lost']), float(request.session['house_area']), float(request.session['air_temperature']), True)
 	energy_loss = laba2cal.getEnergyLoss(list_dict, float(request.session['heat_lost']), float(request.session['house_area']), float(request.session['air_temperature']))
 
 	gvp = laba2cal.GVP(request)
@@ -359,7 +360,7 @@ def calculationLaba2(request):
 	tariff_oak = float(request.session['tariff_oak'])
 	tariff_electricity = float(request.session['tariff_electricity'])
 	tariffs = [tariff, tariff_gas, tariff_coal, tariff_briquettes, tariff_oak, tariff_electricity]
-	histogram = laba2cal.histogram(gvp[1], energy_loss, tariff, tariff_gas, tariff_coal, tariff_briquettes, tariff_oak, tariff_electricity)
+	histogram = laba2cal.histogram(gvp[1], energy_loss, tariff, tariff_gas, tariff_coal, tariff_briquettes, tariff_oak, tariff_electricity, True)
 
 	return {'graphic': graphic, 'energy_loss': energy_loss, 'data_1': data1, 'data_2': data2,
-				'gvp':gvp[0], 'histogram':histogram, 'tariff':tariff, 'tariffs': tariffs}
+				'gvp':gvp[0], 'histogram':histogram, 'tariff':tariff, 'tariffs': tariffs, 'media': site1.settings.MEDIA_ROOT, 'histogram_price': laba2cal.histogram_price(True)}
