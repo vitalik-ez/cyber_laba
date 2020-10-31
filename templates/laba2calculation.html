@@ -19,15 +19,73 @@
       <h1 align="center">Практична робота №2</h1>
       <p class="lead">Діапазон введенних дат: {{ data_1 }} - {{ data_2 }} </p>
 
-
-        <p>Витрати енергії на опалення W = {{ energy_loss }} (кВтˑгод) за період {{ data_1 }} - {{ data_2 }}</p>
         <p>{{ gvp }}</p>
-        <p>Тариф на теплову енергію: {{ tariffs.0 }}</p>
+        <p>Витрати енергії на опалення W = {{ energy_loss }} (кВтˑгод) за період {{ data_1 }} - {{ data_2 }}</p>
+        <p>Тариф на теплову енергію (грн/Гкал): {{ tariffs.0 }}</p>
         <p>Вартість 1 м³ газу: {{ tariffs.1 }}</p>
         <p>Вартість 1 т вугілля: {{ tariffs.2 }}</p>
         <p>Вартість 1 т дров: {{ tariffs.4 }}</p>
         <p>Вартість 1 т пелет: {{ tariffs.3 }}</p>
         <p>Тариф на електричну енергію: {{ tariffs.5 }}</p>
+
+
+        <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.2.3/jquery.min.js"></script>
+            <button id="showHideContent" class="btn btn-primary">Показати/Сховати тарифи та вартість палива</button>
+        <div id="content" style="display:none;">
+              <table class="table table-dark">
+                  <tbody>
+                    <thead>
+                        <tr>
+                          <th scope="col">#</th>
+                          <th scope="col">Вид тарифів та палив</th>
+                          <th scope="col">Ціна (грн)</th>
+                        </tr>
+                      </thead>
+                    <tr>
+                        <th scope="row">1</th>
+                      <td scope="row">Тариф на теплову енергію:</td>
+                      <td>{{ tariffs.0 }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">2</th>
+                      <td scope="row">Вартість 1 м³ газу:</td>
+                      <td>{{ tariffs.1 }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">3</th>
+                      <td scope="row">Вартість 1 т вугілля:</td>
+                      <td>{{ tariffs.2 }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">4</th>
+                      <td scope="row">Вартість 1 т дров:</td>
+                      <td>{{ tariffs.4 }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">5</th>
+                      <td scope="row">Вартість 1 т пелет:</td>
+                      <td>{{ tariffs.3 }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">6</th>
+                      <td scope="row">Тариф на електричну енергію:</td>
+                      <td>{{ tariffs.5 }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+            </div>
+          <script type="text/javascript">
+            $(document).ready(function(){
+                $("#showHideContent").click(function () {
+                    if ($("#content").is(":hidden")) {
+                        $("#content").show("slow");
+                    } else {
+                        $("#content").hide("slow");
+                    }
+                    return false;
+                });
+            });
+          </script>-->
 
         
         <div class="row" style="margin-bottom: 50px;">

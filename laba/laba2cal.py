@@ -163,7 +163,7 @@ def GVP(request):
 
 def histogram(W, energy_loss, tariff, tariff_gas, tariff_coal, tariff_briquettes, tariff_oak, tariff_electricity, pdf = False):
     #W_tariff = tariff * W
-    energy_loss_tariff = tariff * energy_loss
+    energy_loss_tariff = tariff * energy_loss / 1163
     
     gas = 0.1075 * energy_loss * tariff_gas / 1000
     coal = 0.1792 * energy_loss * tariff_coal / 1000
@@ -192,7 +192,7 @@ def histogram(W, energy_loss, tariff, tariff_gas, tariff_coal, tariff_briquettes
        y = y
     )]
     if pdf:
-        layout=go.Layout(title="Експлуатаційні витрати на опалення", xaxis={'title':'Види систем теплозабезпечення'}, yaxis={'title':'Витрати (грн)'})
+        layout=go.Layout(title="Експлуатаційні витрати на опалення", xaxis={'title':'Вид системи теплозабезпечення'}, yaxis={'title':'Витрати (грн)'})
     else:
         layout=go.Layout(title="Експлуатаційні витрати на опалення для різних варіантів реалізації системи теплозабезпечення", xaxis={'title':'Види систем теплозабезпечення'}, yaxis={'title':'Витрати (грн)'})
         
