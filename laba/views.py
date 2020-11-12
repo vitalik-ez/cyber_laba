@@ -182,6 +182,15 @@ class FormView3(View):
 		data = electricalAppliances.objects.filter(pk__in=request.POST.getlist('choices'))
 		days_of_week = ["Понеділок", "Вівторок", "Середа", "Четверг", "Пятниця","Субота", "Неділя"]
 		request.session['id_device'] = request.POST.getlist('choices')
+		request.session['tariff_laba3'] = {'tariff_to_100': request.POST.get('tariff_to_100'),
+										   'tariff_after_100': request.POST.get('tariff_after_100'),
+										   'night_two': request.POST.get('night_two'),
+										   'day_two': request.POST.get('day_two'),
+										   'night_three': request.POST.get('night_three'),
+										   'day_three': request.POST.get('day_three'),
+										   'day_pik': request.POST.get('day_pik')}
+
+
 		return render(request, 'laba3entry.html', {'data': data, 'days_of_week': days_of_week})
 
 	def calculation(request):
@@ -200,6 +209,7 @@ class FormView3(View):
 
 		days_of_week = ["Понеділок", "Вівторок", "Середа", "Четверг", "П'ятниця","Субота", "Неділя"]
 		request.session['GEN'] = { k: {} for k in days_of_week}
+		request.session['histogram_pick'] = { k: {} for k in days_of_week}
 		#print(request.session['GEN']["Понеділок"])
 
 		for i in device:
@@ -208,8 +218,14 @@ class FormView3(View):
 		#for day in days_of_week:
 		#	print(day, request.session['GEN'][day])
 
-		GEN_graphic = laba3cal.GEN_graphic(request)
-		context = {'graphics': graphics, 'GEN_graphic': GEN_graphic}
+		GEN_graphic = laba3cal.GEN_graphic(request, days_of_week)
+
+		histogram_pick = laba3cal.histogram_pick(request,days_of_week)
+		histogram = laba3cal.histogram(request, days_of_week, device)
+
+		cost = laba3cal.cost(request, days_of_week)
+
+		context = {'graphics': graphics, 'GEN_graphic': GEN_graphic, 'histogram': histogram[0], 'result_list': histogram[1], 'day': histogram[2], 'price_list': cost[0], 'result': cost[1], 'histogram_pick': histogram_pick}
 		return render(request, "laba3calculation.html", context)
 
 	def add_element(request):

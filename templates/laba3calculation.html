@@ -29,11 +29,23 @@
         <div class="col-md-12">{{ graphic|safe }}</div>
       </div>
       {% endfor %}
-      <h6>Графік електричного навантаження (ГЕН)</h6>
       <div class="row" style="margin-bottom: 50px;">
         <div class="col-md-12">{{ GEN_graphic|safe }}</div>
       </div>
-
+      <div class="row" style="margin-bottom: 50px;">
+        <div class="col-md-12">{{ histogram_pick|safe }}</div>
+      </div>
+      <div class="row" style="margin-bottom: 50px;">
+        <div class="col-md-12">{{ histogram|safe }}</div>
+      </div>
+      <h6>{{ day }}</h6>
+      {% for i in result_list %}
+        <h6> {{ i.0 }} {{ i.1 }}</h6>
+      {% endfor %}
+      <p>Вартість однозонного тарифу: {{ price_list.0 }} (грн).</p>
+      <p>Вартість двозонного тарифу: {{ price_list.1 }} (грн).</p>
+      <p>Вартість тризонного тарифу: {{ price_list.2 }} (грн).</p>
+      <p>Доцільно використовувати: {{ result }}.</p>
     </div>
 
     <div class="d-flex justify-content-between container" id="top_button">
