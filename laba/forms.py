@@ -1,4 +1,5 @@
 from django import forms
+from .models import electricalAppliances
 
 class DateForm(forms.Form):
     date = forms.DateTimeField(
@@ -25,3 +26,10 @@ class Laba2Form(forms.Form):
     count_litters_bath = forms.DecimalField(min_value=0, max_value=300, initial=150, decimal_places=1,  label='Кількість літрів води, яка витрачається на прийом ванни', widget=forms.NumberInput(attrs={'class':'form-control col-3',}))
 
     air_temperature = forms.DecimalField(min_value=0, max_value=100, initial=20, decimal_places=1, label='Температура повітря всередині будівлі (за вмовчуванням +20°С)', widget=forms.NumberInput(attrs={'class':'form-control col-3',}))
+
+
+
+class electricalAppliancesForm(forms.ModelForm):
+    class Meta:
+        model = electricalAppliances
+        fields = '__all__'

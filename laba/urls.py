@@ -13,6 +13,12 @@ urlpatterns = [
     path('laba2/clear_session', views.clear_session, name='clear_session'),
     path('laba2/getpdfPageLaba2', views.getpdfPageLaba2, name='getpdfPageLaba2'),
 
+    path('laba3/', views.FormView3.as_view(), name='laba3'),
+    path('laba3/add_element', views.FormView3.add_element, name='laba3add'),
+    path('laba3/update_element/<int:pk>', views.FormView3.update_element, name='laba3update'),
+    path('laba3/delete_element/<int:pk>', views.FormView3.delete_element, name='laba3delete'),
+    path('laba3/calculation', views.FormView3.calculation, name='laba3calculation'),
+
 ]
 
 

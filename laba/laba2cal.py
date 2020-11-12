@@ -92,7 +92,7 @@ def graphic(heat_lost, house_area, air_temperature, pdf = False):
     if pdf:
         fig.write_image("report_images/fig0.png")
     plot_div = plot(fig, output_type='div', include_plotlyjs=False)
-    return plot_div
+    return (plot_div, "Q = " + str(round(k, 2)) + " * T зовн. повітря + " + str(round(b, 2)))
 
 
 def getEnergyLoss(list_dict, heat_lost, house_area, air_temperature):

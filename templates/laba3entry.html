@@ -1,0 +1,164 @@
+{% extends "dashboard.html" %}
+{% load static %}
+    {% block head %}
+    {{ block.super }}
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <!--<link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">-->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
+
+    <!-- Font Awesome -->
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+
+    <!-- Moment.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.23.0/moment.min.js" integrity="sha256-VBLiveTKyUZMEzJd6z2mhfxIqz3ZATCuVMawPZGzIfA=" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="{% static 'js/uk.js' %}"></script>
+
+    <!-- Tempus Dominus Bootstrap 4 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.1.2/css/tempusdominus-bootstrap-4.min.css" integrity="sha256-XPTBwC3SBoWHSmKasAk01c08M6sIA5gF5+sRxqak2Qs=" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.1.2/js/tempusdominus-bootstrap-4.min.js" integrity="sha256-z0oKYg6xiLq3yJGsp/LsY9XykbweQlHl42jHv2XTBz4=" crossorigin="anonymous"></script>
+    <!--<link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">-->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
+
+
+    <link rel="stylesheet" href="{% static 'css/style_new.css' %}">
+    {% endblock %}
+  {% block content %}
+
+    
+    <div class="container" style="background-color: rgb(201, 201, 201, 0.25);" >
+      
+      <h1 align="center">Практична робота №3</h1>
+      <form action="{% url 'laba3calculation' %}" method="POST">
+        {% csrf_token %}
+        {% for i in data %}
+            <p>{{ i.id }}</p>
+            <h6>{{i.name}} ({{i.power}} Вт)</h6>
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">День тижня</th>
+                <th scope="col">Час початку роботи</th>
+                <th scope="col">Час завершення роботи</th>
+                <th scope="col">Тривалість перерви</th>
+                <th scope="col">Можливе відхилення від базової тривалості</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for d in days_of_week %}
+              <tr>
+                <th scope="row">{{ d }}</th>
+                <td>
+                  <div class="form-group">
+                 <div class="input-group date" id="datetimepicker{{ i.id }}{{ d }}" data-target-input="nearest">
+                      <input name ="time_start" type="text" class="form-control datetimepicker-input" data-target="#datetimepicker{{ i.id }}{{ d }}"/>
+                      <div class="input-group-append" data-target="#datetimepicker{{ i.id }}{{ d }}" data-toggle="datetimepicker">
+                          <div class="input-group-text"><i class="fa fa-clock"></i></div>
+                      </div>
+                  </div>
+              </div>
+                </td>
+                <td>
+                  <div class="form-group">
+                   <div class="input-group date" id="datetimepicker_end{{ i.id }}{{ d }}" data-target-input="nearest">
+                        <input name ="time_end" type="text" class="form-control datetimepicker-input" data-target="#datetimepicker_end{{ i.id }}{{ d }}"/>
+                        <div class="input-group-append" data-target="#datetimepicker_end{{ i.id }}{{ d }}" data-toggle="datetimepicker">
+                            <div class="input-group-text"><i class="fa fa-clock"></i></div>
+                        </div>
+                    </div>
+                </div>
+                </td>
+                <td><div class="form-group">
+                   <div class="input-group date" id="datetimepicker_break{{ i.id }}{{ d }}" data-target-input="nearest">
+                        <input name ="time_break" type="text" class="form-control datetimepicker-input" data-target="#datetimepicker_break{{ i.id }}{{ d }}"/>
+                        <div class="input-group-append" data-target="#datetimepicker_break{{ i.id }}{{ d }}" data-toggle="datetimepicker">
+                            <div class="input-group-text"><i class="fa fa-clock"></i></div>
+                        </div>
+                    </div></div>
+                  </td>
+                <td>
+                  <div class="form-group">
+                   <div class="input-group date" id="datetimepicker_duration{{ i.id }}{{ d }}" data-target-input="nearest">
+                        <input name ="time_duration" type="text" class="form-control datetimepicker-input" data-target="#datetimepicker_duration{{ i.id }}{{ d }}"/>
+                        <div class="input-group-append" data-target="#datetimepicker_duration{{ i.id }}{{ d }}" data-toggle="datetimepicker">
+                            <div class="input-group-text"><i class="fa fa-clock"></i></div>
+                        </div>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+
+              <script type="text/javascript">
+              $(function () {
+                  var d = new Date();
+                  if ({{ i.id }} == 9){
+                    var h = 0;
+                  }else{
+                    var h = Math.floor(Math.random() * (9 - 6 + 1) + 6);
+                  }
+                  var m = Math.floor(Math.random() * (60 - 0 + 1) + 0);
+                  d.setHours(h, m, 0);
+                  $("#datetimepicker{{ i.id }}{{ d }}").datetimepicker({
+                    stepping: 1,
+                    format: 'HH:mm',
+                    defaultDate: d,
+                  });
+              });
+              $(function () {
+                  var d = new Date();
+                  if ({{ i.id }} == 9){
+                    var h = 23;
+                  }else{
+                    var h = Math.floor(Math.random() * (20 - 18 + 1) + 18);
+                  }
+                  var m = Math.floor(Math.random() * (59 - 30 + 1) + 30);
+                  d.setHours(h, m, 0);
+                  $("#datetimepicker_end{{ i.id }}{{ d }}").datetimepicker({
+                    stepping: 1,
+                    format: 'HH:mm',
+                    defaultDate: d,
+                  });
+              });
+
+              $(function () {
+                  var d = new Date();
+                  var h = Math.floor(Math.random() * (2 - 1 + 1) + 1);
+                  var m = Math.floor(Math.random() * (60 - 0 + 1) + 0);
+                  d.setHours(h, m, 0);
+                  $("#datetimepicker_break{{ i.id }}{{ d }}").datetimepicker({
+                    stepping: 1,
+                    format: 'HH:mm',
+                    defaultDate: d,
+                  });
+              });
+              $(function () {
+                  var d = new Date();
+                  var m = Math.floor(Math.random() * (3 - 1 + 1) + 1);
+                  d.setHours(0, m, 0);
+                  $("#datetimepicker_duration{{ i.id }}{{ d }}").datetimepicker({
+                    stepping: 1,
+                    format: 'HH:mm',
+                    defaultDate: d,
+                  });
+              });
+            </script>
+              {% endfor %}
+            </tbody>
+            </table>
+
+            
+        {% endfor %}
+      <input type="submit" class="btn btn-primary pull-right" value="Провести розрахунки">
+    </form>
+    
+
+        
+<div class="d-flex justify-content-between container" id="top_button">
+    <a class="btn btn-primary pull-right" style="text-align: right; visibility: hidden;" >Назад</a>
+     <a href="{% url 'laba3' %}"><button type="submit" class="btn btn-primary pull-right" id="top_button" style="height: 40px; width: 80px;font-size: 18px;margin-bottom: 40px;">Назад</button></a>
+  </div> 
+  <div style="height: 60px;"></div>
+{% endblock %}

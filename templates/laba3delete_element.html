@@ -1,0 +1,23 @@
+{% extends "dashboard.html" %}
+{% load static %}
+    {% block head %}
+    {{ block.super }}
+    <!--<link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">-->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
+    <link rel="stylesheet" href="{% static 'css/style_new.css' %}">
+
+    {% endblock %}
+  {% block content %}
+    
+    <div class="container" id="gray_block" style="height: 88vh;">
+      <h1 align="center">Ви впевненні що хочете видалити {{ device }}</h1>
+    <form action="{% url 'laba3delete' device.id %}"  method="post">
+      {% csrf_token %}
+        <a href="{% url 'laba3' %}">Відмінити</a>
+        <input type="submit" name="Підтвердити">
+      </form>
+    </div>
+
+{% endblock %}
