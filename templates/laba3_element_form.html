@@ -12,11 +12,19 @@
   {% block content %}
     
     <div class="container" id="gray_block" style="height: 88vh;">
-      <h1 align="center">Добавити/Змінити інформацію в БД</h1>
+      <h1 align="center">{{ actions }}</h1><br>
     <form action=""  method="post">
       {% csrf_token %}
-        {{ form }}
-        <input type="submit" name="submit">
+        <div class="form-row">
+          {% for i in form %}
+            <div class="form-group col-12">
+              <label for="inputEmail4">{{ i.label }}:</label>
+              {{ i }}
+            </div>
+            {% endfor %}
+        </div>
+        <input type="submit" name="submit" value="{{ action }}" type="button" class="btn btn-danger">
+        <a class="btn btn-primary" href="{% url 'laba3' %}" role="button" style="margin-left: 60px;">Назад</a>
       </form>
     </div>
 

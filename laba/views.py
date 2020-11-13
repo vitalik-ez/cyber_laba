@@ -225,7 +225,7 @@ class FormView3(View):
 
 		cost = laba3cal.cost(request, days_of_week)
 
-		context = {'graphics': graphics, 'GEN_graphic': GEN_graphic, 'histogram': histogram[0], 'result_list': histogram[1], 'day': histogram[2], 'price_list': cost[0], 'result': cost[1], 'histogram_pick': histogram_pick}
+		context = {'graphics': graphics, 'GEN_graphic': GEN_graphic, 'histogram': histogram[0], 'result_list': histogram[1], 'day': histogram[2], 'price_list': cost[0], 'result': cost[1],'histogram_price': cost[2], 'histogram_pick': histogram_pick}
 		return render(request, "laba3calculation.html", context)
 
 	def add_element(request):
@@ -235,7 +235,7 @@ class FormView3(View):
 			if form.is_valid():
 				form.save()
 				return redirect('/laba/laba3/')
-		context = {'form': form}
+		context = {'form': form, 'actions': "Добавити новий пристрій в базу даних", 'action': "Додати"}
 		return render(request, 'laba3_element_form.html', context)
 
 	def update_element(request, pk):
@@ -246,11 +246,12 @@ class FormView3(View):
 			if form.is_valid():
 				form.save()
 				return redirect('/laba/laba3/')
-		context = {'form': form}
+		context = {'form': form, 'actions': "Змінити дані електричного пристрою", 'action': "Змінити"}
 		return render(request, 'laba3_element_form.html', context)
 
 	def delete_element(request, pk):
 		device = electricalAppliances.objects.get(id=pk)
+		print()
 		if request.method == 'POST':
 			device.delete()
 			return redirect('/laba/laba3/')

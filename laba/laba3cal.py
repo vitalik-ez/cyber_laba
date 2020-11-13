@@ -94,7 +94,7 @@ def graphics(request, device):
 	        title="Дата"
 	    ),
 	    yaxis=dict(
-	        title="Електрична енергія, кВт*год"
+	        title="Обсяг енергії, кВт*год"
 	    )
 	)
 	fig = go.Figure(data=data, layout=layout)
@@ -147,15 +147,50 @@ def histogram(request, days_of_week, device):
 		#print(request.session['GEN'][day])
 
 	result = days_of_week[y.index(max(y))]
-	result_list = []
+	#result = days_of_week.index(result)
+	#print(result)
+	#print(device)
+	device_energy = []
 	for i in device:
-		result_list.append((device[i]['name'], request.session[device[i]['name']][result]))
+		
+		start = datetime.strptime(device[i]['time_start'][y.index(max(y))], '%H:%M').time()
+		end = datetime.strptime(device[i]['time_end'][y.index(max(y))], '%H:%M').time()
+		time_break = datetime.strptime(device[i]['time_break'][y.index(max(y))], '%H:%M').time()
+
+		duration = timedelta(minutes = device[i]['duration'])
+		delta = timedelta(hours=start.hour, minutes=start.minute)
+
+		#start = timedelta(hours=start.hour, minutes=start.minute)
+		end = timedelta(hours=end.hour, minutes=end.minute)
+		time_break = timedelta(hours=time_break.hour, minutes=time_break.minute)
+
+		range_gen = timedelta(hours=0, minutes=1)
+		current = []
+		while delta <= end:
+			
+			
+			delta_gen = delta
+			while delta_gen <= delta + duration:
+				current.append(device[i]['power'] * device[i]['duration'] / 60 / 1000)
+				delta_gen += range_gen
+
+			delta = delta_gen + time_break
+		device_energy.append(sum(current))
+
+		print(start)
+		print(end)
+
+	print(device_energy)
+
+	result_list = []
+	for index,i in enumerate(device):
+		result_list.append((device[i]['name'], request.session[device[i]['name']][result], round(device_energy[index],3)))
 		#print(device[i]['name'], request.session[device[i]['name']][result])
 
 	trace1 = go.Bar(x=days_of_week, y=y)
 
 	data=go.Data([trace1])
-	layout=go.Layout(title="Обсяги споживання електричної енергії (кВтˑгод) для кожної доби тижня", xaxis={'title':"День тижня"}, yaxis={'title':'Електрична енергія (кВтˑгод)'})
+	layout=go.Layout(title="Обсяги споживання електричної енергії (кВтˑгод) для кожної доби тижня", xaxis={'title':"Дні тижня"}, yaxis={'title':'Електрична енергія (кВтˑгод)'})
 	figure=go.Figure(data=data,layout=layout)
 	plot_div = plot(figure, auto_open=False, output_type='div')
 
@@ -232,7 +267,15 @@ def cost(request, days_of_week):
 	else:
 		result = 'тризонний тариф'
 
-	return (price_list, result)
+
+	trace1 = go.Bar(x=['Однозонний тариф', 'Двозонний тариф', 'Тризонний тариф'], y=price_list)
+
+	data=go.Data([trace1])
+	layout=go.Layout(title="Обсяги витрат коштів (грн) на електричну енергії за однозонним, двозонним та тризонним тарифними планами",font=dict(size=11), xaxis={'title':"Тарифний план"}, yaxis={'title':'Вартість, грн'})
+	figure=go.Figure(data=data,layout=layout)
+	plot_div = plot(figure, auto_open=False, output_type='div')
+
+	return (price_list, result, plot_div)
 
 
 
@@ -252,7 +295,7 @@ def histogram_pick(request, days_of_week):
 	trace1 = go.Bar(x=days_of_week, y=y)
 
 	data=go.Data([trace1])
-	layout=go.Layout(title="Максимальні пікові значення потужності споживання (кВт) для кожної доби тижня", xaxis={'title':"День тижня"}, yaxis={'title':'Потужність, кВт'})
+	layout=go.Layout(title="Максимальні пікові значення потужності споживання (кВт) для кожної доби тижня", xaxis={'title':"Дні тижня"}, yaxis={'title':'Потужність, кВт'})
 	figure=go.Figure(data=data,layout=layout)
 	plot_div = plot(figure, auto_open=False, output_type='div')
 

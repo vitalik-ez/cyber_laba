@@ -29,15 +29,14 @@
   {% block content %}
 
     
-    <div class="container" style="background-color: rgb(201, 201, 201, 0.25);" >
+    <div class="container" style="background-color: rgb(201, 201, 201, 0.55);" >
       
-      <h1 align="center">Практична робота №3</h1>
+      <h1 align="center">Введіть режим роботи</h1>
       <form action="{% url 'laba3calculation' %}" method="POST">
         {% csrf_token %}
         {% for i in data %}
-            <p>{{ i.id }}</p>
-            <h6>{{i.name}} ({{i.power}} Вт)</h6>
-          <table class="table">
+            <h6 style="font-size: 25px;">{{i.name}} ({{i.power}} Вт)</h6>
+          <table class="table" style="color: black;">
             <thead>
               <tr>
                 <th scope="col">День тижня</th>
@@ -153,7 +152,9 @@
 
             
         {% endfor %}
-      <input type="submit" class="btn btn-primary pull-right" value="Провести розрахунки">
+        <div style="text-align: center;">
+          <input type="submit" class="btn btn-danger pull-center" value="Провести розрахунки">
+        </div>
     </form>
     
 

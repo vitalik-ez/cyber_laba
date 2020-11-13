@@ -20,17 +20,17 @@
     {% endblock %}
   {% block content %}
     
-    <div class="container" id="gray_block">
-      <h1 align="center">Введення даних для ПР №3</h1>
+    <div class="container" id="gray_block" style="height: 88vh;">
+      <h1 align="center" style="margin-bottom: 20px;">Вибір приладів-споживачів для ПР №3</h1>
     <form action="{% url 'laba3' %}"  method="post">
       {% csrf_token %}
       <table class="table" style="background-color: white; color: black;"><!-- id="table_id" -->
         <thead>
             <tr>
                 <th>Назва</th>
-                <th>Потужність</th>
-                <th>Тривалість</th>
-                <th>Додати/Оновити</th>
+                <th>Потужність, Вт</th>
+                <th>Тривалість роботи, хв</th>
+                <th>Оновити/Видалити</th>
             </tr>
         </thead>
         <tbody>
@@ -39,7 +39,9 @@
               <td><input type="checkbox" name="choices" value="{{i.id}}"> {{i.name}}</td>
               <td>{{i.power}}</td>
               <td>{{i.duration}}</td>
-              <td><a href="{% url 'laba3update' pk=i.id %}">оновити</a> <a href="{% url 'laba3delete' pk=i.id %}">Видалити</a></td>
+              <td><a href="{% url 'laba3update' pk=i.id %}"><img class='flaticon' style="width:20px; height:20px;" src="{% static '/images/refresh.png' %}"></a> 
+                <a href="{% url 'laba3delete' pk=i.id %}"><img class='flaticon' style="width:20px; height:20px;" src="{% static '/images/delete.png' %}"></a>
+              </td>
             </tr>
             {% endfor %}
         </tbody>
@@ -51,14 +53,71 @@
               } );
         </script>
 
-        <button type="submit" name="choose" class="button">Вибрати</button>
-        <a href="{% url 'laba3add' %}">додати</a>
+        <button type="submit" class="btn btn-danger сol-9" name="choose" class="button">Вибрати</button>
+        <a href="{% url 'laba3add' %}" class="btn btn-primary" role="button">Додати новий елемент </a>
 
-
+        
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.2.3/jquery.min.js"></script>
-            <br><br><button id="showHideContent" class="btn btn-primary">Показати/Сховати тарифи та тарифні зони</button>
+            <br><br>
+            <div style="background-color: rgb(201, 201, 201, 0.45);">
+              <button id="showHideContent" class="btn btn-primary">Показати/Сховати тарифи та тарифні зони</button>
 
-            <div id="content" style="display:none;">
+          <div id="content" style="display:none; color:black;">
+          <div class="form-row">
+            <div class="form-group col-6">
+              <br>
+              <label for="inputEmail4">Тариф до 100 кВт*год:</label>
+              <input name="tariff_to_100" step="0.01" class="form-group col-2" type='number' min='0' value=90 required>
+            </div>
+            <div class="form-group col-6">
+              <br>
+              <label>Тариф після 100 кВт*год:</label>
+              <input name="tariff_after_100" step="0.01" class="form-group col-2" type='number' min='0' value=168 required>
+            </div>
+
+            <div class="form-group col-12" style="justi">
+              <label>Однозонний тариф план (повний тариф).</label>
+            </div>
+            <div class="form-group col-12">
+              <label>Двозонний тариф:</label>
+            </div>
+
+            <div class="form-group col-6">
+              <label>Ніч (0.7 тарифу):</label>
+                <input name="night_two" step="0.01" class="form-group col-2" type='number' min='0' value=0.7 required>
+            </div>
+
+            <div class="form-group col-6">
+              <label>День (повний тариф 1):</label>
+              <input name="day_two" step="0.01" class="form-group col-2" type='number' min='0' value=1 required>
+            </div>
+
+            <div class="form-group col-12">
+              <label>Тризонний тариф.</label>
+            </div>
+
+            <div class="form-group col-4">
+              <label>Ніч (0.4 тарифу):</label><br>
+              <input name="night_three" step="0.01" class="form-group col-4" type='number' min='0' value=0.4 required>
+            </div>
+
+            <div class="form-group col-4">
+              <label>Півпік (повний тариф 1):</label><br>
+              <input name="day_three" step="0.01" class="form-group col-4" type='number' min='0' value=1 required>
+            </div>
+
+            <div class="form-group col-4">
+              <label>Пік (1.5 тарифу):</label><br>
+              <input name="day_pik" step="0.01" class="form-group col-4" type='number' min='0' value=1.5 required>
+            </div>
+
+
+          </div>
+          <div style="height: 30px;"></div>
+        </div>
+
+
+            <!--<div id="content" style="display:none; color: black;">
               <br>
               <div class="form" style="height:540px;">
                 <p>Тарифний план на електричну енергію</p>
@@ -80,7 +139,7 @@
                 <label>Пік (1.5 тарифу):</label>
                 <input name="day_pik" step="0.01" class="form-group col-2" type='number' min='0' value=1.5 required><br>
               </div>
-            </div>
+            </div>-->
           <script type="text/javascript">
             $(document).ready(function(){
                 $("#showHideContent").click(function () {
@@ -93,9 +152,11 @@
                 });
             });
           </script>
+        </div>
         
 
       </form>
+
       
     </div>
 

@@ -12,11 +12,11 @@
   {% block content %}
     
     <div class="container" id="gray_block" style="height: 88vh;">
-      <h1 align="center">Ви впевненні що хочете видалити {{ device }}</h1>
-    <form action="{% url 'laba3delete' device.id %}"  method="post">
+      <h6 align="center" style="font-size: 22px; margin-top:15px;">Ви впевненні що хочете видалити {{ device.name }} ?</h6>
+    <form action="{% url 'laba3delete' device.id %}"  method="post"  align="center">
       {% csrf_token %}
-        <a href="{% url 'laba3' %}">Відмінити</a>
-        <input type="submit" name="Підтвердити">
+        <a class="btn btn-danger" style="margin-top:20px;" href="{% url 'laba3' %}">Відмінити</a>
+        <input class="btn btn-primary" style="margin-top:20px;" type="submit" name="Підтвердити" value="Підтвердити">
       </form>
     </div>
 
