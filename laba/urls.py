@@ -19,6 +19,8 @@ urlpatterns = [
     path('laba3/delete_element/<int:pk>', views.FormView3.delete_element, name='laba3delete'),
     path('laba3/calculation', views.FormView3.calculation, name='laba3calculation'),
 
+
+    path('laba4/', views.FormView4.as_view(), name='laba4'),
 ]
 
 

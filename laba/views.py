@@ -8,6 +8,7 @@ from django.views import View
 from .import plots
 from .import laba2cal
 from .import laba3cal
+from .import laba4cal
 
 import plotly.graph_objs as go
 from plotly.offline import plot
@@ -81,9 +82,13 @@ class FormView(View):
 			request.session['data_1'] = request.POST.get('date_1')
 			request.session['data_2'] = request.POST.get('date_2')
 			return redirect('/laba/laba2')
-		else:
+		elif 'laba3' in request.POST:
 			print(123)
 			return redirect('/laba/laba3')
+		else:
+			request.session['data_1'] = request.POST.get('date_1')
+			request.session['data_2'] = request.POST.get('date_2')
+			return redirect('/laba/laba4')
 
 
 def laba2(data1, data2, request, pdf=False):
@@ -257,6 +262,36 @@ class FormView3(View):
 			return redirect('/laba/laba3/')
 		context = {'device': device}
 		return render(request, 'laba3delete_element.html', context)
+
+
+
+
+class FormView4(View):
+
+	def get(self, request):
+		
+		data1 = request.session['data_1']
+		data2 = request.session['data_2']
+
+		if data1 == None:
+			return render(request, 'laba4.html', {}) 
+
+		graphic_1 = laba4cal.graphic_1()
+		print("YES")
+
+		return render(request, 'laba4.html', {'data1':data1, 'data2': data2, 'graphic': graphic_1})
+
+	def post(self, request):
+		print("Forms")
+		
+
+
+
+
+
+
+
+
 
 def check_bd(request):
 	conn = sqlite3.connect("main.db")
