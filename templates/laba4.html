@@ -19,29 +19,35 @@
       <h1 align="center">Введення даних для ПР №4</h1>
       {% if data1 %}
       <p class="lead">Діапазон введенних дат: {{ data1 }} - {{ data2 }} </p>
-
-      <form action="{% url 'laba3' %}"  method="post">
+      <form action="{% url 'laba4' %}"  method="post">
       {% csrf_token %}
-      <table class="table" style="background-color: white; color: black;"><!-- id="table_id" -->
+      <table class="table" style="background-color: white; color: black;">
         <thead>
             <tr>
-                <th>Назва</th>
-                <th>Потужність, Вт</th>
-                <th>Тривалість роботи, хв</th>
+                <th>Назву типу ВЕУ</th>
+                <th>Варіанти поставки ВЕУ з різними висотами башти</th>
+                <th>Вартість ВЕУ (без башти)</th>
+                <th>Вартість башти</th>
                 <th>Оновити/Видалити</th>
             </tr>
         </thead>
         <tbody>
-          {% for i in data %}
+
+          {% for key,value in dict_data.items %}
             <tr>
-              <td><input type="checkbox" name="choices" value="{{i.id}}"> {{i.name}}</td>
-              <td>{{i.power}}</td>
-              <td>{{i.duration}}</td>
-              <td><a href="{% url 'laba3update' pk=i.id %}"><img class='flaticon' style="width:20px; height:20px;" src="{% static '/images/refresh.png' %}"></a> 
-                <a href="{% url 'laba3delete' pk=i.id %}"><img class='flaticon' style="width:20px; height:20px;" src="{% static '/images/delete.png' %}"></a>
+              <td><input type="radio" name="choose" value="{{key}}"> {{ value.name }}</td>
+              <td>
+
+                {% for j in value.heights %}
+                  <p><input type="radio" name="height" value="{{ j }}"> {{ j }}</p>
+                {% endfor %}
               </td>
+              <td>{{value.price_without_bashta}}</td>
+              <td>546</td>
+              <td>465</td>
             </tr>
             {% endfor %}
+          
         </tbody>
         
         </table>
@@ -50,16 +56,18 @@
 
 
         <button type="submit" class="btn btn-danger сol-9" name="choose" class="button">Вибрати</button>
-        <a href="{% url 'laba3add' %}" class="btn btn-primary" role="button">Додати новий елемент </a>
+        <a href="{% url 'laba4add' %}" class="btn btn-primary" role="button">Додати новий елемент </a><br><br>
+        <div class="form-group col-12">
+          Зелений тариф (грн/кВт*год):
+          <input name="tariff12" step="0.01" class="form-group col-2" type='number' min='0' value=3.39 required>
+        </div>
+        <div class="form-group col-12">
+          Ціна на ОСВ:
+          <input name="OSV" step="0.01" class="form-group col-2" type='number' min='0' value=10 required>
+        </div>
 
 
-        {% if graphic %}
-        <h2>DAAAAA</h2>
-          <div class="row" style="margin-bottom: 50px;">
-            <div class="col-md-12">{{ graphic|safe }}</div>
-          </div>
-          {% endif %}
-
+      </form>
 
 
 

@@ -1,0 +1,48 @@
+{% extends "dashboard.html" %}
+{% load static %}
+    {% block head %}
+    {{ block.super }}
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+  <link rel="stylesheet" href="{% static 'css/style_new.css' %}">
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  
+    <!--<link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">-->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
+
+
+    <link rel="stylesheet" href="{% static 'css/style_new.css' %}">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+
+    {% endblock %}
+  {% block content %}
+    
+    <div class="container" style="background-color: rgb(201, 201, 201, 0.75); color: black; height:110vh">
+      <h1 align="center">Обчислення даних для ПР №4</h1>
+      <p class="lead">Діапазон введенних дат: {{ data1 }} - {{ data2 }} </p>
+
+      <div class="row" >
+        <div class="col-md-12">{{ graphic_1|safe }}</div>
+      </div>
+      <h5>Назва: {{ description.0 }}</h5>
+      <h5>Висота башти: {{ description.1 }}</h5>
+      <h5>Вартість ВЕУ (без башти): {{ description.2 }}</h5>
+      <h5>Вартість башти: {{ description.3 }}</h5>
+      <h5>Обсяг генерування електричної енергії : {{ energy }}</h5>
+      <h5>Проводить оцінку обсягів (т. СО2 екв.) скорочень викидів парникових газів у тонах СО2 еквіваленту : {{ co2 }}</h5>
+      <h5>Дохід (грн): {{ income }}</h5>
+      <h5>Дохід (грн) від продажу одиниць скорочення викидів (ОСВ): {{ income }}</h5>
+
+    </div>
+    <div class="container" style="text-align: center; margin-top: 10px;"><a href="{% url 'getpdfPageLaba4' %}"><button type="button" class="btn btn-danger" data-toggle="button" aria-pressed="false" autocomplete="off">Згенерувати звіт (PDF)</button></a></div>
+
+    <div class="d-flex justify-content-between container" id="top_button">
+    <a class="btn btn-primary pull-right" style="text-align: right; visibility: hidden;" >Назад</a>
+     <a href="{% url 'laba4' %}"><button type="submit" class="btn btn-primary pull-right" id="top_button" style="height: 40px; width: 80px;font-size: 18px;margin-bottom: 40px;">Назад</button></a>
+  </div> 
+  <div style="height: 60px;"></div>
+
+{% endblock %}

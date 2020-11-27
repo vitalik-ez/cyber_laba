@@ -32,8 +32,8 @@ from django.views import View
 from xhtml2pdf import pisa
 
 #laba3
-from .models import electricalAppliances
-from .forms import electricalAppliancesForm
+from .models import *
+from .forms import *
 
 def main_form(request):
 	return render(request, 'date.html', {'media': site1.settings.MEDIA_ROOT})
@@ -266,6 +266,7 @@ class FormView3(View):
 
 
 
+
 class FormView4(View):
 
 	def get(self, request):
@@ -276,18 +277,60 @@ class FormView4(View):
 		if data1 == None:
 			return render(request, 'laba4.html', {}) 
 
-		graphic_1 = laba4cal.graphic_1()
-		print("YES")
+		#graphic_1 = laba4cal.graphic_1()
 
-		return render(request, 'laba4.html', {'data1':data1, 'data2': data2, 'graphic': graphic_1})
+		data = Windmills.objects.all()
+
+		dict_data = {}
+		for i in data:
+			dict_data[i.id] = {'name':i.name, 'price_without_bashta': i.price_without_bashta, 'heights': [ j.height for j in Tower.objects.filter(windmills_id=i.id)]}
+			
+
+		return render(request, 'laba4.html', {'data1':data1, 'data2': data2, 'dict_data': dict_data})
 
 	def post(self, request):
-		print("Forms")
+		data1 = request.session['data_1']
+		data2 = request.session['data_2']
+		if len(request.POST.getlist('choose')) == 0 or 'height' not in request.POST:	
+			data = Windmills.objects.all()
+			dict_data = {}
+			for i in data:
+				dict_data[i.id] = {'name':i.name, 'price_without_bashta': i.price_without_bashta, 'heights': [ j.height for j in Tower.objects.filter(windmills_id=i.id)]}
+			return render(request, 'laba4.html', {'data1':data1, 'data2': data2, 'dict_data': dict_data})
+
+
+		id_windmills = int(request.POST.getlist('choose')[0])
 		
+		obj_windmills = Windmills.objects.get(id=id_windmills)
 
 
+		height = int(request.POST['height'])
+		datetimeObj_1 = datetime.strptime(str(request.session['data_1']), '%d/%m/%Y %H:%M')
+		datetimeObj_2 = datetime.strptime(str(request.session['data_2']), '%d/%m/%Y %H:%M')	
+		list_dict = plots.dataSampling(datetimeObj_1, datetimeObj_2)
+		#print(list_dict)
+		graphic_1 = laba4cal.graphic_1(obj_windmills.name)
+		description = [obj_windmills.name, height, obj_windmills.price_without_bashta, Tower.objects.get(windmills_id=id_windmills, height=height).price]
+
+		energy = laba4cal.energy(list_dict, height, graphic_1[1], graphic_1[2])
+		print("Energy", energy)
+
+		co2 = energy/1000*0.943
+		income = round(energy * float(request.POST.get('tariff12')),2)
+		OSV = round(co2 * float(request.POST.get('OSV')),2)
+		print(request.POST.get('OSV'))
 
 
+		
+		request.session['choose'] = int(request.POST.getlist('choose')[0])
+		request.session['height'] = int(request.POST['height'])
+		request.session['tariff12'] = request.POST.get('tariff12')
+		request.session['OSV'] = request.POST.get('OSV')
+
+		return render(request, 'laba4calculation.html', {'data1': request.session['data_1'], 'data2': request.session['data_2'], 'graphic_1':graphic_1[0], 'description': description, 'energy':round(energy,2), 'co2': round(co2,2), 'income':income, 'OSV': OSV})
+
+	def add_element(self):
+		pass
 
 
 
@@ -442,3 +485,39 @@ def getpdfPageLaba2(request):
 		return HttpResponse(result.getvalue(), content_type='application/pdf')
 	else:
 		return HttpResponse('ERROR GENERATING PDF')
+
+
+def getpdfPageLaba4(request):
+
+	template = get_template('pdfLaba4.html')
+	html  = template.render(laba4(request))
+	result = BytesIO()
+	pdf = pisa.pisaDocument(BytesIO(html.encode("UTF-8")), result, encoding='UTF-8')
+	if not pdf.err:
+		return HttpResponse(result.getvalue(), content_type='application/pdf')
+	else:
+		return HttpResponse('ERROR GENERATING PDF')
+
+
+
+def laba4(request):
+	id_windmills = request.session['choose']
+		
+	obj_windmills = Windmills.objects.get(id=id_windmills)
+
+
+	height = request.session['height']
+	datetimeObj_1 = datetime.strptime(str(request.session['data_1']), '%d/%m/%Y %H:%M')
+	datetimeObj_2 = datetime.strptime(str(request.session['data_2']), '%d/%m/%Y %H:%M')	
+	list_dict = plots.dataSampling(datetimeObj_1, datetimeObj_2)
+	#print(list_dict)
+	graphic_1 = laba4cal.graphic_1(obj_windmills.name)
+	description = [obj_windmills.name, height, obj_windmills.price_without_bashta, Tower.objects.get(windmills_id=id_windmills, height=height).price]
+
+	energy = laba4cal.energy(list_dict, height, graphic_1[1], graphic_1[2])
+
+	co2 = energy/1000*0.943
+	income = round(energy * float(request.session['tariff12']),2)
+	OSV = round(co2 * float(request.session['OSV']),2)
+
+	return {'data1': request.session['data_1'], 'data2': request.session['data_2'], 'graphic_1':graphic_1[0], 'description': description, 'energy':round(energy,2), 'co2': round(co2,2), 'income':income, 'OSV': OSV, 'media': site1.settings.MEDIA_ROOT}

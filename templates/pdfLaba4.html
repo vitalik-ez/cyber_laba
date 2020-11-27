@@ -1,0 +1,39 @@
+<!DOCTYPE HTML>
+{% load static %}
+<html>
+ <head>
+  <meta charset="utf-8">
+  <title>Звіт по розрахункам ПР №2</title>
+  <style>
+    @font-face {
+    font-family: Arial;
+    src: url({{media}}/arial.ttf);
+    }
+    body { font-family: arial; font-size: 15px; }
+  </style>
+ </head>
+ <body>
+      <div style="display: flex; text-align: center; justify-content: center; font-size: 25px;"><h2>Звіт по розрахункам ПР №4</h2></div>
+      <p class="lead">Діапазон введенних дат: {{ data1 }} - {{ data2 }} </p>
+        
+
+        <div class="row" >
+        <div class="col-md-12">
+           <div style="border: 1px solid black;"><img src="../report_images/laba4.png" alt="" /></div>
+        </div>
+        </div>
+        <h5>Назва: {{ description.0 }}</h5>
+        <h5>Висота башти: {{ description.1 }}</h5>
+        <h5>Вартість ВЕУ (без башти): {{ description.2 }}</h5>
+        <h5>Вартість башти: {{ description.3 }}</h5>
+        <h5>Обсяг генерування електричної енергії : {{ energy }}</h5>
+        <h5>Проводить оцінку обсягів (т. СО2 екв.) скорочень викидів парникових газів у тонах СО2 еквіваленту : {{ co2 }}</h5>
+        <h5>Дохід (грн): {{ income }}</h5>
+        <h5>Дохід (грн) від продажу одиниць скорочення викидів (ОСВ): {{ income }}</h5>
+
+
+
+  </div>
+
+ </body>
+</html>

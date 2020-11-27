@@ -33,3 +33,9 @@ class electricalAppliancesForm(forms.ModelForm):
     class Meta:
         model = electricalAppliances
         fields = '__all__'
+
+
+class WindmillsForm(forms.ModelForm):
+    class Meta:
+        model = electricalAppliances
+        fields = '__all__'

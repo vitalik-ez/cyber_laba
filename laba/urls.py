@@ -21,6 +21,8 @@ urlpatterns = [
 
 
     path('laba4/', views.FormView4.as_view(), name='laba4'),
+    path('laba4/getpdfPageLaba4', views.getpdfPageLaba4, name='getpdfPageLaba4'),
+    path('laba4/add_element', views.FormView4.add_element, name='laba4add'),
 ]
 
 
