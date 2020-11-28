@@ -10,13 +10,22 @@ class electricalAppliances(models.Model):
 
 class Windmills(models.Model):
 	name = models.CharField(max_length=30, verbose_name = "Назва")
-	energy_character = models.FileField(upload_to='uploads/', null=True)
+	energy_character = models.FileField(upload_to='energy_characteristic/', null=True, verbose_name = "Енергетична характеристика ВЕУ")
 	#height =  models.IntegerField(validators=[MinValueValidator(1)], verbose_name = "Варіанти поставки ВЕУ з різними висотами башти")
 	price_without_bashta = models.IntegerField(validators=[MinValueValidator(1)], verbose_name = "Вартість ВЕУ (без башти)")
 	#price_bashta = models.IntegerField(validators=[MinValueValidator(1)], verbose_name = "Вартість башти")
 
 class Tower(models.Model):
-	height = models.IntegerField(validators=[MinValueValidator(1)], verbose_name = "Варіанти поставки ВЕУ з різними висотами башти")
-	price = models.IntegerField(validators=[MinValueValidator(100)], verbose_name = "Ціна")
-	windmills = models.ForeignKey(Windmills, on_delete=models.CASCADE)
+	height = models.IntegerField(verbose_name = "Висота башти")
+	price = models.IntegerField(verbose_name = "Вартість башти")
+	#windmills = models.ForeignKey(Windmills, on_delete=models.CASCADE)
+	windmills = models.IntegerField()
+
+
+
+class TowerNew(models.Model):
+	height = models.IntegerField(verbose_name = "Висота new башти")
+	price = models.IntegerField(verbose_name = "Вартість new башти")
+	#windmills = models.ForeignKey(Windmills, on_delete=models.CASCADE)
+	windmills = models.IntegerField(verbose_name = "Який вітряк")
 

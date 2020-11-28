@@ -31,7 +31,7 @@ from django.template.loader import get_template
 from django.views import View
 from xhtml2pdf import pisa
 
-#laba3
+#laba3-4
 from .models import *
 from .forms import *
 
@@ -256,7 +256,6 @@ class FormView3(View):
 
 	def delete_element(request, pk):
 		device = electricalAppliances.objects.get(id=pk)
-		print()
 		if request.method == 'POST':
 			device.delete()
 			return redirect('/laba/laba3/')
@@ -283,7 +282,10 @@ class FormView4(View):
 
 		dict_data = {}
 		for i in data:
-			dict_data[i.id] = {'name':i.name, 'price_without_bashta': i.price_without_bashta, 'heights': [ j.height for j in Tower.objects.filter(windmills_id=i.id)]}
+			heights = [ (j.height, j.id) for j in Tower.objects.filter(windmills=i.id)]
+			prices = [ j.price for j in Tower.objects.filter(windmills=i.id)]
+			prices_heights = zip(prices,heights)
+			dict_data[i.id] = {'name':i.name, 'price_without_bashta': i.price_without_bashta, 'heights': heights, 'prices': prices_heights}
 			
 
 		return render(request, 'laba4.html', {'data1':data1, 'data2': data2, 'dict_data': dict_data})
@@ -292,11 +294,8 @@ class FormView4(View):
 		data1 = request.session['data_1']
 		data2 = request.session['data_2']
 		if len(request.POST.getlist('choose')) == 0 or 'height' not in request.POST:	
-			data = Windmills.objects.all()
-			dict_data = {}
-			for i in data:
-				dict_data[i.id] = {'name':i.name, 'price_without_bashta': i.price_without_bashta, 'heights': [ j.height for j in Tower.objects.filter(windmills_id=i.id)]}
-			return render(request, 'laba4.html', {'data1':data1, 'data2': data2, 'dict_data': dict_data})
+			
+			return render(request, 'laba4.html', {'data2': data2, 'error': 'Виберіть тип ВЕУ та його висоту'})
 
 
 		id_windmills = int(request.POST.getlist('choose')[0])
@@ -305,12 +304,14 @@ class FormView4(View):
 
 
 		height = int(request.POST['height'])
+
+		print(height, id_windmills)
 		datetimeObj_1 = datetime.strptime(str(request.session['data_1']), '%d/%m/%Y %H:%M')
 		datetimeObj_2 = datetime.strptime(str(request.session['data_2']), '%d/%m/%Y %H:%M')	
 		list_dict = plots.dataSampling(datetimeObj_1, datetimeObj_2)
 		#print(list_dict)
 		graphic_1 = laba4cal.graphic_1(obj_windmills.name)
-		description = [obj_windmills.name, height, obj_windmills.price_without_bashta, Tower.objects.get(windmills_id=id_windmills, height=height).price]
+		description = [obj_windmills.name, height, obj_windmills.price_without_bashta, Tower.objects.get(windmills=id_windmills, height=height).price]
 
 		energy = laba4cal.energy(list_dict, height, graphic_1[1], graphic_1[2])
 		print("Energy", energy)
@@ -329,8 +330,67 @@ class FormView4(View):
 
 		return render(request, 'laba4calculation.html', {'data1': request.session['data_1'], 'data2': request.session['data_2'], 'graphic_1':graphic_1[0], 'description': description, 'energy':round(energy,2), 'co2': round(co2,2), 'income':income, 'OSV': OSV})
 
-	def add_element(self):
-		pass
+	def add_element(request):
+		data = Windmills.objects.latest('id')
+		print("Last", data.id )
+		form = WindmillsForm()
+		formTower = TowerForm(initial={'windmills': data.id + 1})
+		#formTower = TowerForm()
+		if request.method == 'POST':
+			form = WindmillsForm(request.POST, request.FILES)
+			print(request.POST['windmills'])
+			formTower = TowerForm(request.POST)
+			if form.is_valid() and formTower.is_valid():
+				form.save()
+				formTower.save()
+				return redirect('/laba/laba4/')
+		context = {'form': form,'formTower': formTower, 'actions': "Добавити ВЕУ в базу даних", 'action': "Додати"}
+		return render(request, 'laba4_element_form.html', context)
+
+	def update_element(request, pk):
+		windmill = Windmills.objects.get(id=pk)
+		#tower = Tower.objects.filter(windmills_id=pk)
+		#print(tower)
+
+		form = WindmillsForm(instance=windmill)
+		#formTower = TowerForm(instance=tower)
+
+
+		if request.method == 'POST':
+			form = WindmillsForm(request.POST, request.FILES, instance=windmill)
+			if form.is_valid():
+				form.save()
+				return redirect('/laba/laba4/')
+		context = {'form': form, 'actions': "Змінити дані ВЕУ", 'action': "Змінити"}
+		return render(request, 'laba4_element_form.html', context)
+
+	def delete_element(request, pk):
+		windmill = Windmills.objects.get(id=pk)
+		if request.method == 'POST':
+			windmill.delete()
+			return redirect('/laba/laba4/')
+		print(windmill)
+		context = {'windmill': windmill, 'pk': pk}
+		return render(request, 'laba4delete_element.html', context)
+
+
+	def add_height(request, pk):
+		form = TowerForm(initial={'windmills': pk})
+		#form = TowerForm()
+		if request.method == 'POST':
+			form = TowerForm(request.POST)
+			if form.is_valid():
+				print("SAVE")
+				form.save()
+				return redirect('/laba/laba4/')
+		context = {'form': form, 'actions': "Змінити дані ВЕУ", 'action': "Додати"}
+		return render(request, 'laba4_add_height.html', context)
+
+	def delete_height(request, pk):
+		tower = Tower.objects.get(id=pk)
+		tower.delete()
+		print("delete tower")
+		return redirect('/laba/laba4/')
 
 
 
@@ -511,8 +571,8 @@ def laba4(request):
 	datetimeObj_2 = datetime.strptime(str(request.session['data_2']), '%d/%m/%Y %H:%M')	
 	list_dict = plots.dataSampling(datetimeObj_1, datetimeObj_2)
 	#print(list_dict)
-	graphic_1 = laba4cal.graphic_1(obj_windmills.name)
-	description = [obj_windmills.name, height, obj_windmills.price_without_bashta, Tower.objects.get(windmills_id=id_windmills, height=height).price]
+	graphic_1 = laba4cal.graphic_1(obj_windmills.name, True)
+	description = [obj_windmills.name, height, obj_windmills.price_without_bashta, Tower.objects.get(windmills=id_windmills, height=height).price]
 
 	energy = laba4cal.energy(list_dict, height, graphic_1[1], graphic_1[2])
 

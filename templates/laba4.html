@@ -15,7 +15,7 @@
     {% endblock %}
   {% block content %}
     
-    <div class="container" id="gray_block" style="height: 1300px;">
+    <div class="container" id="gray_block" style="height: 95vh;">
       <h1 align="center">Введення даних для ПР №4</h1>
       {% if data1 %}
       <p class="lead">Діапазон введенних дат: {{ data1 }} - {{ data2 }} </p>
@@ -25,9 +25,9 @@
         <thead>
             <tr>
                 <th>Назву типу ВЕУ</th>
-                <th>Варіанти поставки ВЕУ з різними висотами башти</th>
-                <th>Вартість ВЕУ (без башти)</th>
-                <th>Вартість башти</th>
+                <th>Доступні висоти, м</th>
+                <th>Вартість ВЕУ (без башти), грн</th>
+                <th>Вартість башти, грн</th>
                 <th>Оновити/Видалити</th>
             </tr>
         </thead>
@@ -39,12 +39,22 @@
               <td>
 
                 {% for j in value.heights %}
-                  <p><input type="radio" name="height" value="{{ j }}"> {{ j }}</p>
+                  <p><input type="radio" name="height" value="{{ j.0 }}"> {{ j.0 }} <a href="{% url 'laba4_delete_height' pk=j.1 %}"><img class='flaticon' style="width:20px; height:20px;" src="{% static '/images/minus.png' %}"></a> </p>
                 {% endfor %}
+                <a href="{% url 'laba4add_height' pk=key %}"><img class='flaticon' style="width:20px; height:20px;" src="{% static '/images/add.png' %}"></a> 
               </td>
               <td>{{value.price_without_bashta}}</td>
-              <td>546</td>
-              <td>465</td>
+              <td>
+                
+                {% for price in value.prices %}
+                  <p>{{ price.0 }} ({{ price.1.0 }} м)</p>
+                {% endfor %}
+
+              </td>
+              <td>
+                <a href="{% url 'laba4update' pk=key %}"><img class='flaticon' style="width:20px; height:20px;" src="{% static '/images/refresh.png' %}"></a> 
+                <a href="{% url 'laba4delete' pk=key %}"><img class='flaticon' style="width:20px; height:20px;" src="{% static '/images/delete.png' %}"></a>
+              </td>
             </tr>
             {% endfor %}
           
@@ -57,11 +67,11 @@
 
         <button type="submit" class="btn btn-danger сol-9" name="choose" class="button">Вибрати</button>
         <a href="{% url 'laba4add' %}" class="btn btn-primary" role="button">Додати новий елемент </a><br><br>
-        <div class="form-group col-12">
+        <div class="form-group col-12" style="color: black">
           Зелений тариф (грн/кВт*год):
           <input name="tariff12" step="0.01" class="form-group col-2" type='number' min='0' value=3.39 required>
         </div>
-        <div class="form-group col-12">
+        <div class="form-group col-12" style="color: black">
           Ціна на ОСВ:
           <input name="OSV" step="0.01" class="form-group col-2" type='number' min='0' value=10 required>
         </div>
@@ -72,7 +82,14 @@
 
 
       {% else %}
-        <h5>Введіть спочатку діапазон дат на сторінці "Введення даних"</h5>
+        {% if data2 %}
+          <h5>{{ error }}</h5>
+          <div class="d-flex justify-content-between container" id="top_button">
+          <a class="btn btn-primary pull-right" style="text-align: right; visibility: hidden;" >Назад</a>
+           <a href="{% url 'laba4' %}"><button type="submit" class="btn btn-primary pull-right" id="top_button" style="height: 40px; width: 80px;font-size: 18px;margin-bottom: 40px;">Назад</button></a>
+        {% else %}
+          <h5>Введіть спочатку діапазон дат на сторінці "Введення даних"</h5>
+        {% endif %}
       {% endif %}
 
     </div>

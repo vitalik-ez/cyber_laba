@@ -4,9 +4,11 @@ import xlrd
 import plotly.graph_objs as go
 from plotly.offline import plot
 from datetime import datetime, date, timedelta
+import site1
 
-def graphic_1(name):
-	rb = xlrd.open_workbook('energy_characteristic/' + name + '.xls',formatting_info=True)
+def graphic_1(name, pdf=False):
+	print(site1.settings.MEDIA_ROOT)
+	rb = xlrd.open_workbook(site1.settings.MEDIA_ROOT + "energy_characteristic/" + name + ".xls",formatting_info=True)
 	sheet = rb.sheet_by_index(0)
 
 	x, y = [], []
@@ -38,7 +40,8 @@ def graphic_1(name):
 	    )
 	)
 	fig = go.Figure(data=data, layout=layout)
-	fig.write_image("report_images/laba4.png")
+	if pdf:
+		fig.write_image("report_images/laba4.png")
 	plot_div = plot(fig, output_type='div', include_plotlyjs=False)
 	return (plot_div, xnew, ynew)
 

@@ -20,7 +20,7 @@
     {% endblock %}
   {% block content %}
     
-    <div class="container" style="background-color: rgb(201, 201, 201, 0.75); color: black; height:110vh">
+    <div class="container" style="background-color: rgb(201, 201, 201, 0.75); color: black; height: 90vh">
       <h1 align="center">Обчислення даних для ПР №4</h1>
       <p class="lead">Діапазон введенних дат: {{ data1 }} - {{ data2 }} </p>
 
@@ -34,7 +34,7 @@
       <h5>Обсяг генерування електричної енергії : {{ energy }}</h5>
       <h5>Проводить оцінку обсягів (т. СО2 екв.) скорочень викидів парникових газів у тонах СО2 еквіваленту : {{ co2 }}</h5>
       <h5>Дохід (грн): {{ income }}</h5>
-      <h5>Дохід (грн) від продажу одиниць скорочення викидів (ОСВ): {{ income }}</h5>
+      <h5>Дохід (грн) від продажу одиниць скорочення викидів (ОСВ): {{ OSV }}</h5>
 
     </div>
     <div class="container" style="text-align: center; margin-top: 10px;"><a href="{% url 'getpdfPageLaba4' %}"><button type="button" class="btn btn-danger" data-toggle="button" aria-pressed="false" autocomplete="off">Згенерувати звіт (PDF)</button></a></div>

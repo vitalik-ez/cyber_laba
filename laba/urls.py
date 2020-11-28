@@ -23,6 +23,10 @@ urlpatterns = [
     path('laba4/', views.FormView4.as_view(), name='laba4'),
     path('laba4/getpdfPageLaba4', views.getpdfPageLaba4, name='getpdfPageLaba4'),
     path('laba4/add_element', views.FormView4.add_element, name='laba4add'),
+    path('laba4/update_element/<int:pk>', views.FormView4.update_element, name='laba4update'),
+    path('laba4/delete_element/<int:pk>', views.FormView4.delete_element, name='laba4delete'),
+    path('laba4/add_height/<int:pk>', views.FormView4.add_height, name='laba4add_height'),
+    path('laba4/delete_height/<int:pk>', views.FormView4.delete_height, name='laba4_delete_height'),
 ]
 
 

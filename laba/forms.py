@@ -1,5 +1,5 @@
 from django import forms
-from .models import electricalAppliances
+from .models import *
 
 class DateForm(forms.Form):
     date = forms.DateTimeField(
@@ -37,5 +37,22 @@ class electricalAppliancesForm(forms.ModelForm):
 
 class WindmillsForm(forms.ModelForm):
     class Meta:
-        model = electricalAppliances
+        model = Windmills
         fields = '__all__'
+
+class TowerForm(forms.ModelForm):
+
+    class Meta:
+        model = Tower
+        fields = '__all__'
+        widgets = {'windmills': forms.HiddenInput()}
+        #fields = ['height', 'price']
+
+
+class TowerNewForm(forms.ModelForm):
+
+    class Meta:
+        model = TowerNew
+        fields = '__all__'
+        widgets = {'windmills': forms.HiddenInput()}
+        #fields = ['height', 'price']
