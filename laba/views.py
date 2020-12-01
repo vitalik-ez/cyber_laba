@@ -293,9 +293,13 @@ class FormView4(View):
 	def post(self, request):
 		data1 = request.session['data_1']
 		data2 = request.session['data_2']
-		if len(request.POST.getlist('choose')) == 0 or 'height' not in request.POST:	
+		print(request.POST.getlist('choose'))
+
+		if len(request.POST.getlist('choose')) == 1 or 'height' not in request.POST:	
 			
 			return render(request, 'laba4.html', {'data2': data2, 'error': 'Виберіть тип ВЕУ та його висоту'})
+
+		
 
 
 		id_windmills = int(request.POST.getlist('choose')[0])
@@ -311,7 +315,17 @@ class FormView4(View):
 		list_dict = plots.dataSampling(datetimeObj_1, datetimeObj_2)
 		#print(list_dict)
 		graphic_1 = laba4cal.graphic_1(obj_windmills.name)
-		description = [obj_windmills.name, height, obj_windmills.price_without_bashta, Tower.objects.get(windmills=id_windmills, height=height).price]
+		
+		try:
+			tower_object = Tower.objects.get(windmills=id_windmills, height=height).price
+		except Tower.DoesNotExist:
+			tower_object = None
+		if tower_object == None:	
+			return render(request, 'laba4.html', {'data2': data2, 'error': 'Виберіть відповідну висоту до обраного типу ВЕУ!'})
+		
+
+
+		description = [obj_windmills.name, height, obj_windmills.price_without_bashta, tower_object]
 
 		energy = laba4cal.energy(list_dict, height, graphic_1[1], graphic_1[2])
 		print("Energy", energy)

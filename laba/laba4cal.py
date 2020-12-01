@@ -65,6 +65,8 @@ def energy(list_dict, height, xnew, ynew):
 	x = [ i for i in d.keys() ]
 	x = speed(x, height)
 	y = [ i.days * 24 + i.seconds/3600 if i.days != 0 else i.seconds / 3600 for i in d.values() ]
+	print(y)
+	print(sum(y)/24)
 	xnew = [ round(i,2) for i in xnew]
 	x_min = min(xnew)
 	power = []

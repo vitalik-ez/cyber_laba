@@ -27,14 +27,16 @@
       <div class="row" >
         <div class="col-md-12">{{ graphic_1|safe }}</div>
       </div>
-      <h5>Назва: {{ description.0 }}</h5>
-      <h5>Висота башти: {{ description.1 }}</h5>
-      <h5>Вартість ВЕУ (без башти): {{ description.2 }}</h5>
-      <h5>Вартість башти: {{ description.3 }}</h5>
-      <h5>Обсяг генерування електричної енергії : {{ energy }}</h5>
-      <h5>Проводить оцінку обсягів (т. СО2 екв.) скорочень викидів парникових газів у тонах СО2 еквіваленту : {{ co2 }}</h5>
-      <h5>Дохід (грн): {{ income }}</h5>
-      <h5>Дохід (грн) від продажу одиниць скорочення викидів (ОСВ): {{ OSV }}</h5>
+      <div style="margin-top: 20px">
+        <h5>Тип ВЕУ: {{ description.0 }}</h5>
+        <h5>Висота башти: {{ description.1 }} (м)</h5>
+        <h5>Вартість ВЕУ (без башти): {{ description.2 }} (грн)</h5>
+        <h5>Вартість башти: {{ description.3 }} (грн)</h5>
+        <h5>Обсяг генерування електричної енергії : {{ energy }} (кВт*год)</h5>
+        <h5>Обсяг скорочення викидів СO2: {{ co2 }} (тонн)</h5>
+        <h5>Дохід: {{ income }} (грн)</h5>
+        <h5>Дохід від продажу одиниць скорочення викидів (ОСВ): {{ OSV }} (грн)</h5>
+      </div>
 
     </div>
     <div class="container" style="text-align: center; margin-top: 10px;"><a href="{% url 'getpdfPageLaba4' %}"><button type="button" class="btn btn-danger" data-toggle="button" aria-pressed="false" autocomplete="off">Згенерувати звіт (PDF)</button></a></div>

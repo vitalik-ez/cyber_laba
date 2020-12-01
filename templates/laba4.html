@@ -15,7 +15,7 @@
     {% endblock %}
   {% block content %}
     
-    <div class="container" id="gray_block" style="height: 95vh;">
+    <div class="container" id="gray_block" style="height: 105vh;">
       <h1 align="center">Введення даних для ПР №4</h1>
       {% if data1 %}
       <p class="lead">Діапазон введенних дат: {{ data1 }} - {{ data2 }} </p>
@@ -25,7 +25,7 @@
         <thead>
             <tr>
                 <th>Назву типу ВЕУ</th>
-                <th>Доступні висоти, м</th>
+                <th>Висота, м</th>
                 <th>Вартість ВЕУ (без башти), грн</th>
                 <th>Вартість башти, грн</th>
                 <th>Оновити/Видалити</th>
@@ -61,19 +61,38 @@
         </tbody>
         
         </table>
+        
 
         
 
 
         <button type="submit" class="btn btn-danger сol-9" name="choose" class="button">Вибрати</button>
         <a href="{% url 'laba4add' %}" class="btn btn-primary" role="button">Додати новий елемент </a><br><br>
-        <div class="form-group col-12" style="color: black">
+
+        <input type="button" value="Очистити" class="btn btn-primary" onclick="Clear();">
+        <script type="text/javascript">
+          function Clear()
+          {    
+             clearRadioGroup("height");
+             clearRadioGroup("choose");
+          }
+
+          function clearRadioGroup(GroupName)
+          {
+            var ele = document.getElementsByName(GroupName);
+            for(var i=0;i<ele.length;i++)
+              ele[i].checked = false;
+          }
+        </script>
+
+
+        <div class="form-group col-12" style="color: white">
           Зелений тариф (грн/кВт*год):
           <input name="tariff12" step="0.01" class="form-group col-2" type='number' min='0' value=3.39 required>
         </div>
-        <div class="form-group col-12" style="color: black">
+        <div class="form-group col-12" style="color: white">
           Ціна на ОСВ:
-          <input name="OSV" step="0.01" class="form-group col-2" type='number' min='0' value=10 required>
+          <input name="OSV" step="0.01" class="form-group col-2" type='number' min='0' value=340 required>
         </div>
 
 
